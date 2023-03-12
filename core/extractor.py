@@ -107,9 +107,6 @@ class Extract:
                 
                 db.close()
 
-        except FileNotFoundError:
-            return "Null"
-
         finally: 
             try:
                 os.remove(tempfile)

