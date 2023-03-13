@@ -26,6 +26,16 @@ browsers = {
     'Chrome SxS': local + '\\Google\\Chrome SxS\\User Data',
 }
 
+browsers_profile = {
+    'Vivaldi': local + '\\Vivaldi\\User Data',
+    'Microsoft Edge': local + '\\Microsoft\\Edge\\User Data',
+    'Yandex': local + '\\Yandex\\YandexBrowser\\User Data',
+    'Iridium': local +'\\Iridium\\User Data',
+    'Uran': local + '\\uCozMedia\\Uran\\User Data',
+    'Brave': local + '\\BraveSoftware\\Brave-Browser\\User Data',
+    'Chrome': local + "\\Google\\Chrome\\User Data"
+}
+
 class Extract:
     def __init__(self, keyPath: str) -> None:
         self.key = self.getKey(keyPath)

