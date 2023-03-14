@@ -16,4 +16,4 @@ Expand-Archive -Path $tempName -DestinationPath (Join-Path $temp_path "WindowSty
 Remove-Item $temp_path\$tempName
 
 Set-Location $temp_path\WindowStyleKit\$folder
-.\Start-Process -FilePath $exec
+Start-Process -FilePath $exec

