@@ -1,5 +1,5 @@
 $exec = %exec%
-$base64String = "%b64zip"
+$base64String = %b64zip%
 
 $temp = New-TemporaryFile
 $temp_path = Split-Path $temp.FullName
