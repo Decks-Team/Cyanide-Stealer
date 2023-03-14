@@ -45,7 +45,7 @@ def build(webhook: str, output: str):
     print(f"[{Fore.CYAN}*{Fore.RESET}] Setup launcher...")
     with open("core/template/launcher.tm", "r") as f:
         template = f.read().replace(r"%b64zip%", '"'+zipbase64.decode()+'"')
-        template = template.replace(r"%folders%", '"'+output+'"')
+        template = template.replace(r"%folder%", '"'+output+'"')
         template = template.replace(r"%exec%", '"'+output+".exe"+'"')
     
     print(f"[{Fore.GREEN}${Fore.RESET}] Writing launcher...")
