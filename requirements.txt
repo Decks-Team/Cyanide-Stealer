@@ -1,0 +1,6 @@
+vdf
+discord_webhook
+nukelib
+pywin32
+pycryptodome
+psutil

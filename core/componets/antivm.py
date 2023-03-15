@@ -3,7 +3,6 @@ import psutil
 import uuid
 import sys
 import os
-import time
 
 class Antidbg:
     def proc_check():

