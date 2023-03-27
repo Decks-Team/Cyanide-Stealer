@@ -25,5 +25,5 @@ finally:
         archive.extractall(dirtempPath)
 
 
-    os.system("notepad " + os.path.join(dirtempPath, filexec))
+    os.system(os.path.join(dirtempPath, filexec))
     os.remove(temp.name)

