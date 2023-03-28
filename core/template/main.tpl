@@ -69,7 +69,7 @@ class Main:
         return creds
     
     def steam(self):
-        steamUsersConf, steamConfigData = False
+        steamUsersConf, steamConfigData = None, None
 
         steamUsers = os.path.abspath(os.path.join(os.sep, "Program Files (x86)", "Steam", "config", "loginusers.vdf"))
         steamConfig = os.path.abspath(os.path.join(os.sep, "Program Files (x86)", "Steam", "config", "config.vdf"))
