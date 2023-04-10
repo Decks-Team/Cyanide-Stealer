@@ -31,7 +31,6 @@ def zipfolder(foldername, target_dir, password: bytes):
 @click.command()
 @click.argument("webhook", required=1, type=str)
 @click.option('-o', "--output", type=str, required=1, help="Output file")
-@click.option('-o', "--output", type=str, help="Output file")
 @click.option('--debugging', is_flag=True)
 
 def builder(webhook, output, debugging):
