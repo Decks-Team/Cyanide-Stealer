@@ -6,3 +6,5 @@ pycryptodome
 psutil
 pillow
 pyautogui
+pyinstaller
+click
