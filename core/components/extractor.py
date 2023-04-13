@@ -132,10 +132,10 @@ class Extract:
         shutil.copy(cookiesPath, tempfile)
         db = sqlite3.connect(tempfile)
         cursor = db.cursor()
-        cursor.execute("select host_key, name, encrypted_value, path, expires_utc, is_secure, is_httponly from cookies")
+        cursor.execute("select host_key, name, encrypted_value, path, expires_utc, is_secure, is_httponly, samesite from cookies")
 
         for row in cursor.fetchall():
-            cookies[row[0]] = {"name": row[1], "value": self.decryption(row[2], self.key), "path": row[3], "expires": row[4], "secure": row[5], "httponly": row[6]}
+            cookies[row[0]] = {"name": row[1], "value": self.decryption(row[2], self.key), "path": row[3], "expires": row[4], "secure": row[5], "httponly": row[6], "sameSite": row[7]}
 
         cursor.close()
         db.close()
