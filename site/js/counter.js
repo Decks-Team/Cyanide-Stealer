@@ -31,13 +31,16 @@ document.addEventListener("DOMContentLoaded", () => {
     xhr.responseType = "json";
     xhr.onload = () => {
         let victims = xhr.response["victims"]
+        let tokens = xhr.response["tokens"]
         let creds = xhr.response["creds"]
         counter("creds-text", 0, creds, 3000);
         
         if (parseInt(victims) < 10){
             changeText(victims, "victims-text")
+            changeText(tokens, "tokens-text")
         }
         else{
+            counter("tokens-text", 0, tokens, 3000);
             counter("victims-text", 0, victims, 3000);
         }
         

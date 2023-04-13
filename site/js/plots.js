@@ -76,7 +76,6 @@ function line() {
   xhr.onload = () => {
     yValue = xhr.response["dateCount"]
     yValue.push
-    console.log(yValue)
     var lineData = {
       labels: months,
       datasets: [{

@@ -1,7 +1,6 @@
 const token = localStorage.getItem("token");
 const random = localStorage.getItem("random");
 
-document.getElementById("account").textContent = "ciao"
 
 function checkAPI() {
     const xhttp = new XMLHttpRequest();
@@ -50,6 +49,8 @@ function tokenLogin() {
     xhr.onload = () => {
         if (xhr.status == 401) {
             window.location.replace("../login/index.html");
+        }else{
+            document.getElementById("account").textContent = xhr.response["username"].charAt(0).toUpperCase() + xhr.response["username"].slice(1);
         }
     };
 }

@@ -8,9 +8,6 @@ body {
     background-color: #202020;
 }
 
-canvas{
-    margin: 0 auto;
-}
 
 h1, h2, h3, h4, h5, h6, a, p{
     color: white;
@@ -70,82 +67,6 @@ i{
     margin: 0 0 0 220px;
     padding: 20px;
     font-size: 24px;
-}
-
-.cards{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-}
-
-.counter{
-    background-color: #612698;
-}
-
-.victims{
-    background-color: #c22e1d;
-}
-
-.card{
-    height: 90%;
-    font-family: 'Noto Sans', sans-serif;
-    display: flex;
-    flex-direction: column;
-}
-
-.card .head{
-    font-weight: bolder;
-    font-size: 15px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.head .title{
-    padding-top: 3px;
-}
-
-.item *{
-    margin: 0;
-}
-
-.item .text-item{
-    font-weight: bold;
-    font-size: 30px;
-}
-
-.card .head, .item{
-    margin-left: 40px;
-    margin-right: 40px;
-}
-
-.cardh{
-    height: 230px;
-}
-
-.cardh, .card{
-    border-radius: 10px;
-    margin: 20px;
-}
-
-.line-cards{
-    display: grid;
-    padding-bottom: 1vh;
-}
-.line-cards .tokens{
-    background-color: #17688a;
-}
-
-.charts{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-}
-
-.charts .box{
-    display: inline-block;
-    margin: 20px;
-    background-color: #292929;
-    padding: 30px;
-    position: relative;
-    border-radius: 10px;
 }
 
 .logo{

