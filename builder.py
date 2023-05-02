@@ -10,8 +10,10 @@ from core.logs import banner
 from colorama import Fore
 from base64 import standard_b64encode as b64encode
 
+# Var
 stealerPath = os.path.join("core", "template", "main.tpl")
 launcherPath = os.path.join("core", "template", "launcher.tpl")
+
 
 def get_random_string(length=10) -> bytes:
     letters = string.ascii_lowercase
