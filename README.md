@@ -20,8 +20,11 @@
 ## Features
 
 - Browser stealing
+
 - Discord token grabbing
+
 - AntiVM
+
 - AntiDebug
 
 ## Installation
